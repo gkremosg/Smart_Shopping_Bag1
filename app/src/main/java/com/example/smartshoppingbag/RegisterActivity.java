@@ -2,7 +2,21 @@ package com.example.smartshoppingbag;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.example.smartshoppingbag.Connection.ConnectionClass;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -31,7 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    public class registeruser extends AsyncTask<String, String , String>{
+    public class registeruser extends AsyncTask<String, String , String> {
 
         String z = "";
         Boolean isSuccess = false;
