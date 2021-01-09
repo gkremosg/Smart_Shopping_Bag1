@@ -66,12 +66,12 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... strings) {
             try{
-                con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.ip.toString());
+                con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
                 if(con == null){
                     z = "Check Your Internet Connection";
                 }
                 else{
-                    String sql = "INSERT INTO register (name,email,password) VALUES ('"+name.getText()+"','"+email.getText()+"','"+password.getText()+"')";
+                    String sql = "INSERTt INTO dbo.register (username,email,password) VALUES ('"+name.getText()+"','"+email.getText()+"','"+password.getText()+"')";
                     stmt = con.createStatement();
                     stmt.executeUpdate(sql);
                 }
