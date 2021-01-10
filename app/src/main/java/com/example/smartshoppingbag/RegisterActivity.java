@@ -71,7 +71,7 @@ public class RegisterActivity extends AppCompatActivity {
                     z = "Check Your Internet Connection";
                 }
                 else{
-                    String sql = "INSERTt INTO dbo.register (username,email,password) VALUES ('"+name.getText()+"','"+email.getText()+"','"+password.getText()+"')";
+                    String sql = "INSERT INTO dbo.register (username,email,password) VALUES ('"+name.getText()+"','"+email.getText()+"','"+password.getText()+"')";
                     stmt = con.createStatement();
                     stmt.executeUpdate(sql);
                 }
