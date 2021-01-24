@@ -26,7 +26,6 @@ public class LoginActivity extends AppCompatActivity {
 
     Connection con;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
