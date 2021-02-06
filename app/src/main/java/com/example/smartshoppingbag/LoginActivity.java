@@ -27,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     Connection con;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -96,9 +96,15 @@ public class LoginActivity extends AppCompatActivity {
                         });
                         z = "Success";
 
+                        String str = emaillogin.getText().toString();
+
+                        Intent intent_email = new Intent(getApplicationContext(), AddNewMember.class);
+                        intent_email.putExtra("email", str);
+
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
+
                     } else {
                         runOnUiThread(new Runnable() {
                             @Override

@@ -75,7 +75,7 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="220dp"
-        android:backgroundTint="#1919ff"
+        android:backgroundTint="@color/colorelgianbuttons"
         android:text="Register"
         android:textAllCaps="false"
         android:textColor="#ffffff"
