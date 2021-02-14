@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.smartshoppingbag.Connection.ConnectionClass;
 
@@ -22,15 +23,17 @@ import java.sql.Statement;
 
 
 public class AddNewMember extends AppCompatActivity {
-
     EditText email;
+    //String email;
     Button addmemberbtn;
     TextView status;
     Connection con;
     Statement stmt;
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_member);
 
@@ -57,13 +60,6 @@ public class AddNewMember extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String s) {
-            status.setText("New Member was added");
-            email.setText("");
-
-        }
-
-        @Override
         public String doInBackground(String... strings) {
             try{
                 con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
@@ -71,21 +67,28 @@ public class AddNewMember extends AppCompatActivity {
                     z = "Check Your Internet Connection";
                 }
                 else{
-
-                    Intent intent_email = getIntent();
-                    String str = intent_email.getStringExtra("email");
-
+                    //String test_email = email.toString();
+                    //Intent intent_email = getIntent();
+                    //String str = intent_email.getStringExtra("email");
+                   // String sql = "SELECT userID FROM register WHERE email = '" + "gkremosg@gmail.com" +"'";
                     String sql = "SELECT userID FROM register WHERE email = '" + email.getText() +"'";
                     stmt = con.createStatement();
                     ResultSet rs = stmt.executeQuery(sql);
+                    while (rs.next()) {
+                        userID = rs.getString("userID");
+                    }
 
-                    sql = "SELECT userID FROM register WHERE email = '" + str +"'";
-                    stmt = con.createStatement();
-                    ResultSet rs2 = stmt.executeQuery(sql);
+                    //Toast.makeText(AddNewMember.this, "Email was selected", Toast.LENGTH_LONG).show();
+                    Intent in = getIntent();
+                    String str = in.getStringExtra("str");
 
-                    sql = "INSERT INTO dbo.usermember (memberID, userID) VALUES (" + rs.getString(0) +"," +rs2.getString(0) + ")";
-                    stmt = con.createStatement();
-                    stmt.executeQuery(sql);
+                   sql = "SELECT userID FROM register WHERE email = '" + str +"'";
+                   stmt = con.createStatement();
+                   ResultSet rs2 = stmt.executeQuery(sql);
+
+                  //  sql = "INSERT INTO dbo.usermember (memberID, userID) VALUES (" + rs.getString(0) +"," +rs2.getString(0) + ")";
+                   // stmt = con.createStatement();
+                   // stmt.executeQuery(sql);
                 }
 
             }catch (Exception e){
@@ -94,6 +97,13 @@ public class AddNewMember extends AppCompatActivity {
             }
 
             return z;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            status.setText("New Member was added" + userID);
+           // email.setText("");
+
         }
     }
 

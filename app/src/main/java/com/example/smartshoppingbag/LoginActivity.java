@@ -23,7 +23,7 @@ import java.sql.Statement;
 public class LoginActivity extends AppCompatActivity {
     EditText emaillogin,passwordlogin;
     Button loginbtn,regbtn;
-
+    String str;
     Connection con;
 
     @Override
@@ -39,7 +39,9 @@ public class LoginActivity extends AppCompatActivity {
         loginbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 new LoginActivity.checkLogin().execute("");
+                
             }
         });
 
@@ -96,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
                         });
                         z = "Success";
 
-                        String str = emaillogin.getText().toString();
+                        str = emaillogin.getText().toString();
 
                         Intent intent_email = new Intent(getApplicationContext(), AddNewMember.class);
                         intent_email.putExtra("email", str);
