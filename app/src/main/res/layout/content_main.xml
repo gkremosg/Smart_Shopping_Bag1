@@ -7,90 +7,92 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity">
 
+    <!--
+       <Button
+           android:id="@+id/backToLoginbtn"
+           android:layout_width="wrap_content"
+           android:layout_height="43dp"
+           android:layout_marginStart="16dp"
+           android:layout_marginTop="100dp"
+           android:layout_marginEnd="16dp"
+           android:layout_marginBottom="24dp"
+           android:text="Back"
+           app:layout_constraintBottom_toBottomOf="parent"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintHorizontal_bias="0.0"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toTopOf="parent"
+           app:layout_constraintVertical_bias="1.0" />
 
-    <Button
-        android:id="@+id/backToLoginbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="43dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
-        android:text="Back"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+       <Button
+           android:id="@+id/createNewListbtn"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginBottom="24dp"
+           android:text="Create new list"
+           app:layout_constraintBottom_toTopOf="@+id/textView6"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintStart_toStartOf="parent" />
+   -->
+       <Button
+           android:id="@+id/addNewMemberbtn"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginBottom="100dp"
+           android:text="Add new member"
+           app:layout_constraintBottom_toBottomOf="parent"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/createNewListbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:text="Create new list"
-        app:layout_constraintBottom_toTopOf="@+id/textView6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    <!--
+       <TextView
+           android:id="@+id/textView4"
+           android:layout_width="62dp"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="16dp"
+           android:text="Welcome "
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintHorizontal_bias="0.498"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/addNewMemberbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
-        android:text="Add new member"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+       <TextView
+           android:id="@+id/textView6"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginBottom="16dp"
+           android:text="Choose Shopping members:"
+           app:layout_constraintBottom_toTopOf="@+id/gallery_memberlist"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="62dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Welcome "
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+       <TextView
+           android:id="@+id/textView5"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="16dp"
+           android:text="Choose Shoppingbag list:"
+           app:layout_constraintBottom_toTopOf="@+id/gallery_shoppinglist"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="Choose Shopping members:"
-        app:layout_constraintBottom_toTopOf="@+id/gallery_memberlist"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+       <androidx.recyclerview.widget.RecyclerView
+           android:id="@+id/gallery_memberlist"
+           android:layout_width="300dp"
+           android:layout_height="120dp"
+           app:layout_constraintBottom_toTopOf="@+id/addNewMemberbtn"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Choose Shoppingbag list:"
-        app:layout_constraintBottom_toTopOf="@+id/gallery_shoppinglist"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+       <androidx.recyclerview.widget.RecyclerView
+           android:id="@+id/gallery_shoppinglist"
+           android:layout_width="300dp"
+           android:layout_height="163dp"
+           android:layout_marginBottom="16dp"
+           app:layout_constraintBottom_toTopOf="@+id/createNewListbtn"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintStart_toStartOf="parent" />
+   -->
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/gallery_memberlist"
-        android:layout_width="300dp"
-        android:layout_height="120dp"
-        app:layout_constraintBottom_toTopOf="@+id/addNewMemberbtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/gallery_shoppinglist"
-        android:layout_width="300dp"
-        android:layout_height="163dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/createNewListbtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+   </androidx.constraintlayout.widget.ConstraintLayout>

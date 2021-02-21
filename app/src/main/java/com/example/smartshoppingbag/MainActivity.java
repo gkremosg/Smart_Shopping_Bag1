@@ -19,17 +19,18 @@ public class MainActivity extends AppCompatActivity {
     Button addNewMemberbtn;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
-       /* Toolbar toolbar = findViewById(R.id.toolbar);
+
+        /*Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);*/
 
-        Intent in = getIntent();
-        String str = in.getStringExtra("str");
+       /* Intent in = getIntent();
+        String str = in.getStringExtra("str");*/
 
-       /* FloatingActionButton fab = findViewById(R.id.fab);
+        /*FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }); */
 
-        addNewMemberbtn.setOnClickListener(new View.OnClickListener() {
+       addNewMemberbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,AddNewMember.class);
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
     //@Override
      /*  public boolean onCreateOptionsMenu(Menu menu) {
