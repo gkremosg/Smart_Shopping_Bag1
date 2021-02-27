@@ -60,6 +60,7 @@ public class RegisterActivity extends AppCompatActivity {
             status.setText("Registration Successful");
             name.setText("");
             email.setText("");
+            //email.setText("");
             password.setText("");
         }
 

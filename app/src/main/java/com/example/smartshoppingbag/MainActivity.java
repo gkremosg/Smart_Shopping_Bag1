@@ -15,7 +15,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
-
+    Button createNewListbtn;
     Button addNewMemberbtn;
 
     @Override
@@ -23,39 +23,28 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
+        addNewMemberbtn = (Button)findViewById(R.id.addNewMemberbtn);
+        createNewListbtn = (Button)findViewById(R.id.createNewListbtn);
 
-        /*Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);*/
-
-       /* Intent in = getIntent();
-        String str = in.getStringExtra("str");*/
-
-        /*FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        }); */
+        Intent in = getIntent();
+        String str = in.getStringExtra("str");
 
        addNewMemberbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,AddNewMember.class);
                 startActivity(intent);
-                finish();
             }
         });
     }
 
-
-    //@Override
-     /*  public boolean onCreateOptionsMenu(Menu menu) {
+/*
+    @Override
+       public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+       return true;
 
     }
 
@@ -72,6 +61,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }*/
-
+    }
+*/
 }

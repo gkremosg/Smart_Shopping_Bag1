@@ -50,7 +50,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
     }
@@ -71,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
 
         }
 
+        @SuppressLint("WrongThread")
         @Override
         protected String doInBackground(String... strings) {
             con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
@@ -105,7 +105,6 @@ public class LoginActivity extends AppCompatActivity {
 
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
-                        finish();
 
                     } else {
                         runOnUiThread(new Runnable() {

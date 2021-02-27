@@ -10,7 +10,4 @@ public class ConnectionClass {
     public static String pass = "elgian2020";
     public static String db = "Elgian_ApplicationsDB";
     public static String server ="elgian.ctsqbpiudxuu.us-east-2.rds.amazonaws.com";
-    //public static NumericShaper db;
-    //public static String port = "";
-    //public static SafeIterableMap.Entry ip;
 }
