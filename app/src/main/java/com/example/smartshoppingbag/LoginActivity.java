@@ -100,11 +100,9 @@ public class LoginActivity extends AppCompatActivity {
 
                         str = emaillogin.getText().toString();
 
-                        Intent intent_email = new Intent(getApplicationContext(), AddNewMember.class);
-                        intent_email.putExtra("email", str);
-
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
+                        Intent intentMain = new Intent(LoginActivity.this, MainActivity.class);
+                        intentMain.putExtra("message_key", str);
+                        startActivity(intentMain);
 
                     } else {
                         runOnUiThread(new Runnable() {
