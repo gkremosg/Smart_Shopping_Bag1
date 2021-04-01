@@ -251,11 +251,11 @@ public class MainActivity extends AppCompatActivity {
             final MainActivity_UsermembersListItems mainactivity_usermemberslistitems = values.get(position);
             //holder.textName.setText(mainactivity_usermemberslistitems.getName());
             holder.textView.setText(mainactivity_usermemberslistitems.getName());
-            holder.layout.setBackgroundColor(mainactivity_usermemberslistitems.isSelected() ? Color.CYAN : Color.WHITE);
+            holder.layout.setBackgroundColor(mainactivity_usermemberslistitems.isSelected() ? Color.LTGRAY : Color.WHITE);
             holder.textView.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View view){
                     mainactivity_usermemberslistitems.setSelected(!mainactivity_usermemberslistitems.isSelected());
-                    holder.layout.setBackgroundColor(mainactivity_usermemberslistitems.isSelected() ? Color.CYAN : Color.WHITE);
+                    holder.layout.setBackgroundColor(mainactivity_usermemberslistitems.isSelected() ? Color.LTGRAY : Color.WHITE);
                 }
             });
         }
