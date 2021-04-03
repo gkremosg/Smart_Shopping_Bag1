@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
@@ -46,8 +47,9 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     //Start MainActivity Declarations------------------------------------------------------------
     Button createNewListbtn;
+    Button showmycostsbtn;
     TextView Welcometext;
-    EditText email;
+    EditText emailmembertoadd;
     Button addmemberbtn;
     TextView status;
     Connection con;
@@ -70,11 +72,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.content_main);
+        showmycostsbtn = (Button)findViewById(R.id.showmycostsbtn);
         addmemberbtn = (Button)findViewById(R.id.addmemberbtn);
         createNewListbtn = (Button)findViewById(R.id.createNewListbtn);
         Welcometext = (TextView)findViewById(R.id.Welcometext);
-        email = (EditText)findViewById(R.id.AddNewMember);
-        addmemberbtn = (Button)findViewById(R.id.addmemberbtn);
+        emailmembertoadd = (EditText)findViewById(R.id.AddNewMember);
         status = (TextView)findViewById(R.id.status);
 
         //Load str (email txt) from LoginActivity
@@ -217,14 +219,14 @@ public class MainActivity extends AppCompatActivity {
             // public textView and layout
             public TextView textView;
             public View layout;
-            ///public Button btndelete_member;
+            public ImageView removeImg;
 
             public ViewHolder(View view)
             {
                 super(view);
                 layout = view;
                 textView = (TextView) view.findViewById(R.id.textView);
-
+                removeImg = itemView.findViewById(R.id.img_remove);
             }
         }
 
@@ -246,16 +248,59 @@ public class MainActivity extends AppCompatActivity {
 
         // Binding items to the view
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
 
             final MainActivity_UsermembersListItems mainactivity_usermemberslistitems = values.get(position);
-            //holder.textName.setText(mainactivity_usermemberslistitems.getName());
             holder.textView.setText(mainactivity_usermemberslistitems.getName());
             holder.layout.setBackgroundColor(mainactivity_usermemberslistitems.isSelected() ? Color.LTGRAY : Color.WHITE);
             holder.textView.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View view){
                     mainactivity_usermemberslistitems.setSelected(!mainactivity_usermemberslistitems.isSelected());
                     holder.layout.setBackgroundColor(mainactivity_usermemberslistitems.isSelected() ? Color.LTGRAY : Color.WHITE);
+                }
+            });
+            holder.removeImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //Remove member from recycleview
+                    values.remove(position);
+                    notifyDataSetChanged();
+                    //Remove member (user-member connection entry of dbo.usermember) from DB
+                    try{
+                        con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
+                        if(con == null){
+
+                        }
+                        else{
+                            //Find memberID from dbo.register
+                            String sql = "SELECT userID FROM register WHERE email = '" + mainactivity_usermemberslistitems.getName() +"'";
+                            ResultSet rs = con.createStatement().executeQuery(sql);
+                            while (rs.next()) {
+                                memberID = rs.getInt("userID");
+                            }
+                            //Load str (useremail txt) from LoginActivity
+                            Intent in = getIntent();
+                            String str = in.getStringExtra("message_key");
+
+                            sql = "SELECT userID FROM register WHERE email = '" + str +"'";
+                            ResultSet rs2 = con.createStatement().executeQuery(sql);
+                            while (rs2.next()) {
+                                userID = rs2.getInt("userID");
+                            }
+                            //Delete user-member connection entry from dbo.usermember
+                            sql = "DELETE FROM usermember WHERE userID = " + userID + " AND " + "memberID = "+ memberID ;
+                            ResultSet rs3 = con.createStatement().executeQuery(sql);
+
+                            //Refresh Member-List
+                            itemArrayList = new ArrayList<MainActivity_UsermembersListItems>();
+                            SyncData orderData = new SyncData();
+                            orderData.execute("");
+                        }
+
+                    }catch (Exception e){
+                        status.setText("Error");
+                    }
+                    status.setText("Member "+ mainactivity_usermemberslistitems.getName() +" deleted");
                 }
             });
         }
@@ -282,6 +327,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Connect to DB, check if entered email (member to add) exists and find userID and username from logged-in-user,
         //If member-user connection does not already exist, then insert new member-user connection in usermember table
+        @SuppressLint("WrongThread")
         @Override
         public String doInBackground(String... strings) {
             try{
@@ -291,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else{
 
-                    String sql = "SELECT userID, email FROM register WHERE email = '" + email.getText() +"'";
+                    String sql = "SELECT userID, email FROM register WHERE email = '" + emailmembertoadd.getText() +"'";
                     ResultSet rs = con.createStatement().executeQuery(sql);
                     while (rs.next()) {
                         memberID = rs.getInt("userID");
@@ -310,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
                     //check if member-user connection does not already exist
                     sql = "SELECT usermemberID FROM usermember WHERE userID = " + userID + " AND " + "memberID = "+ memberID ;
                     ResultSet rs3 = con.createStatement().executeQuery(sql);
-                    if (!rs3.next()) {
+                    if (!rs3.next()&&!(memberID==null)) {
                         //write new member-user connection into DB
                         sql = "INSERT INTO usermember (userID, memberID) VALUES (" + userID + ", " + memberID + ")";
                         ResultSet rs4 = con.createStatement().executeQuery(sql);
@@ -331,13 +377,7 @@ public class MainActivity extends AppCompatActivity {
         //Show Text to user
         @Override
         protected void onPostExecute(String s) {
-            /*if(usermemberentry = false){
-                status.setText("Member is already in your list");
-
-            }
-            else{
-                status.setText(useremail + " has added " + memberemail + " as member");
-            }*/
+            //emailmembertoadd = null;
         }
     }
     //End checkmember class-----------------------------------------------------------------------

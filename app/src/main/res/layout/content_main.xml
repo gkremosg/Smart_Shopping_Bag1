@@ -12,18 +12,16 @@
         android:id="@+id/createNewListbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
         android:text="Create new list"
+        android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/textView6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/recyclerView" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="300dp"
-        android:layout_height="200dp"
-        android:layout_marginBottom="16dp"
+        android:layout_height="250dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@+id/createNewListbtn"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,9 +32,9 @@
         android:id="@+id/Welcometext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:text=""
-        app:layout_constraintBottom_toTopOf="@+id/textView5"
+        app:layout_constraintBottom_toTopOf="@+id/showmycostsbtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -45,13 +43,10 @@
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="220dp"
-        android:layout_marginBottom="24dp"
-        android:text="Choose List"
+        android:text="My Shopping-Lists"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewMyMembers"
@@ -62,50 +57,60 @@
         android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@+id/AddNewMember"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Choose Members"
+        android:text="My Shopping-Members"
         app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyMembers"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/AddNewMember"
-        android:layout_width="wrap_content"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
         android:layout_marginBottom="80dp"
         android:ems="10"
-        android:hint="Enter Email"
+        android:hint="Enter Member Email"
         android:inputType="textEmailAddress"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/recyclerViewMyMembers" />
 
     <Button
         android:id="@+id/addmemberbtn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
+        android:layout_height="46dp"
+        android:layout_marginBottom="72dp"
         android:text="Add Member"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.602"
-        app:layout_constraintStart_toEndOf="@+id/AddNewMember"
+        app:layout_constraintEnd_toEndOf="@+id/recyclerViewMyMembers"
         tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text=""
-        android:textSize="25dp"
+        android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@+id/addmemberbtn"
         tools:layout_editor_absoluteX="0dp" />
 
-   </androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/showmycostsbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="10dp"
+        android:text="Show My Costs"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/textView5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

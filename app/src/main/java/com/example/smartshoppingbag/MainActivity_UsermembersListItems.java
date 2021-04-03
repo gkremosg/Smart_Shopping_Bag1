@@ -2,16 +2,16 @@ package com.example.smartshoppingbag;
 
 public class MainActivity_UsermembersListItems {
 
-        public String email; //email
+        public String memberemail; //email
         private boolean isSelected = false;
 
         public MainActivity_UsermembersListItems(String email)
         {
-            this.email = email;
+            this.memberemail = email;
         }
 
         public String getName() {
-            return email;
+            return memberemail;
         }
 
         public void setSelected(boolean selected) {
