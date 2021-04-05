@@ -45,6 +45,7 @@ import java.util.List;
 
 //Start Code for Main Activity----------------------------------------------------------------------
 public class MainActivity extends AppCompatActivity {
+
     //Start MainActivity Declarations------------------------------------------------------------
     Button createNewListbtn;
     Button showmycostsbtn;
@@ -57,11 +58,19 @@ public class MainActivity extends AppCompatActivity {
     Integer memberID;
     String memberemail;
     String useremail;
+
     private ArrayList<MainActivity_UsermembersListItems> itemArrayList; //List items Array
+    private ArrayList<MainActivity_UserLists> itemArrayMylists; //List items Array
+
     private MyAppAdapter myAppAdapter; //Array Adapter
+    private MyAppAdapter_Userlist myAppAdapter_userlist; //Array Adapter
+
     private RecyclerView recyclerViewMyMembers; //RecyclerView
     private RecyclerView.LayoutManager mLayoutManager;
     private boolean success = false; // boolean
+
+    private RecyclerView recyclerViewMyLists; //RecyclerView
+
     private ConnectionClass connectionClass; //Connection Class Variable
     //End MainActivity Declarations--------------------------------------------------------------
 
@@ -84,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         String str = intent.getStringExtra("message_key");
         Welcometext.setText("Welcome " + str);
 
-        //itemArrayList and Recyclerview Declaration
+        //itemArrayList and Recyclerview Declaration for member list
         itemArrayList = new ArrayList<MainActivity_UsermembersListItems>();
         recyclerViewMyMembers = (RecyclerView) findViewById(R.id.recyclerViewMyMembers);
         recyclerViewMyMembers.setHasFixedSize(true);
@@ -92,12 +101,24 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         recyclerViewMyMembers.setLayoutManager(mLayoutManager);
 
+        //itemArrayList and Recyclerview Declaration for Mylists list
+        itemArrayMylists = new ArrayList<MainActivity_UserLists>();
+        recyclerViewMyLists = (RecyclerView) findViewById(R.id.recyclerViewMyLists);
+        recyclerViewMyLists.setHasFixedSize(true);
+        //use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(this);
+        recyclerViewMyLists.setLayoutManager(mLayoutManager);
+
         // Connection Class Initialization
         connectionClass = new ConnectionClass();
 
-        // Calling AsyncTask/SyncData
+        // Calling AsyncTask/SyncData for Mymembers recyclerview
         SyncData orderData = new SyncData();
         orderData.execute("");
+
+        // Calling AsyncTask/SyncData for MyLists recyclerview
+        SyncData_MyLists orderData_MyLists = new SyncData_MyLists();
+        orderData_MyLists.execute("");
 
         //Action onClick BUTTON Add Member
         addmemberbtn.setOnClickListener(new View.OnClickListener() {
@@ -112,6 +133,104 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     //End onCreate MainActivity -----------------------------------------------------------------
+
+    //Start AsyncTask/SyncData to Load Data to recyclerViewMyLists-----------------------------
+    private class SyncData_MyLists extends AsyncTask<String, String, String>
+    {
+        String msg = "Internet/DB_Credentials/Windows_FireWall_TurnOn Error, See Android Monitor in the bottom For details!";
+        ProgressDialog progress;
+
+        //Starts the progress dailog
+        @Override
+        protected void onPreExecute()
+        {
+            progress = ProgressDialog.show(MainActivity.this, "Synchronising",
+                    "MyList is Loading...", true);
+        }
+
+        //Connect to the database, write query and add items to itemArrayList of MainActivity_UserLists
+        @Override
+        protected String doInBackground(String... strings)
+        {
+            try
+            {
+                con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
+                if(con == null)
+                {
+                    success = false;
+                }
+                else {
+
+                    //Load str (email txt) from LoginActivity
+                    Intent in = getIntent();
+                    String str = in.getStringExtra("message_key");
+
+                    //Find userID from intented str (email of the logged-in-user)
+                    String sql = "SELECT userID FROM register WHERE email = '" + str +"'";
+                    ResultSet rs2 = con.createStatement().executeQuery(sql);
+                    while (rs2.next()) {
+                        userID = rs2.getInt("userID");
+                    }
+
+                    //Find emails from joined members of the logged-in-user
+                    sql = "SELECT listname, listdate FROM userlist WHERE userID = "+ userID + " ORDER BY listdate";
+                    ResultSet rs = con.createStatement().executeQuery(sql);
+
+                    if (rs != null) // if resultset not null, I add items to itemArraylist using class created
+                    {
+                        while (rs.next())
+                        {
+                            try {
+                                itemArrayMylists.add(new MainActivity_UserLists(rs.getString("listname"), rs.getString("listdate")));
+                                status.setText("Second itemArrayMylists Query successfull");
+
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                                status.setText("Second itemArrayMylists Query unsuccessfull for "+userID);
+                            }
+                        }
+                        msg = "Found";
+                        success = true;
+                    } else {
+                        msg = "No Lists found!";
+                        success = false;
+                    }
+                }
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+                Writer writer = new StringWriter();
+                e.printStackTrace(new PrintWriter(writer));
+                msg = writer.toString();
+                success = false;
+            }
+            return msg;
+        }
+
+        //Load items of itemArrayList to recyclerViewMyMembers in MainActivity by using MyAppAdapter
+        @Override
+        protected void onPostExecute(String msg)
+        {
+            progress.dismiss();
+            Toast.makeText(MainActivity.this, msg + "", Toast.LENGTH_LONG).show();
+            if (success == false)
+            {
+            }
+            else {
+                try
+                {
+                    myAppAdapter_userlist = new MyAppAdapter_Userlist(itemArrayMylists , MainActivity.this);
+                    recyclerViewMyLists.setAdapter(myAppAdapter_userlist);
+                } catch (Exception ex)
+                {
+
+                }
+
+            }
+        }
+    }
+    //End AsyncTask/SyncData to Load Data to recyclerViewMyLists-------------------------------
+
 
     //Start AsyncTask/SyncData to Load Data to recyclerViewMyMembers-----------------------------
     private class SyncData extends AsyncTask<String, String, String>
@@ -151,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     //Find emails from joined members of the logged-in-user
-                    sql = "SELECT email FROM register AS r INNER JOIN usermember AS um ON r.userID = um.memberID WHERE um.userID = "+ userID ;
+                    sql = "SELECT email FROM register AS r INNER JOIN usermember AS um ON r.userID = um.memberID WHERE um.userID = "+ userID + " ORDER BY r.email";
                     ResultSet rs = con.createStatement().executeQuery(sql);
 
                     if (rs != null) // if resultset not null, I add items to itemArraylist using class created
@@ -208,6 +327,117 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     //End AsyncTask/SyncData to Load Data to recyclerViewMyMembers-------------------------------
+
+    //Start RecyclerView.Adapter: MyAppAdapter---------------------------------------------------
+    public class MyAppAdapter_Userlist extends RecyclerView.Adapter<MyAppAdapter_Userlist.ViewHolder> {
+        private List<MainActivity_UserLists> values_mylists;
+        public Context context;
+
+        public class ViewHolder extends RecyclerView.ViewHolder
+        {
+            // public textView and layout
+            public TextView textListName;
+            public TextView textListDate;
+            public View layout;
+            public ImageView img_options;
+
+            public ViewHolder(View view)
+            {
+                super(view);
+                layout = view;
+                textListName = (TextView) view.findViewById(R.id.textListName);
+                textListDate = (TextView) view.findViewById(R.id.textListDate);
+                img_options = itemView.findViewById(R.id.img_options);
+            }
+        }
+
+        // Constructor
+        public MyAppAdapter_Userlist(List<MainActivity_UserLists> myDataset_myLists,Context context)
+        {
+            values_mylists = myDataset_myLists;
+            this.context = context;
+        }
+
+        // Create new views (invoked by the layout manager) and inflates
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            // create a new view
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_activity_userlists, parent, false);
+            return new ViewHolder(view);
+        }
+
+        // Binding items to the view
+        @Override
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
+
+            final MainActivity_UserLists mainActivity_userLists = values_mylists.get(position);
+            holder.textListName.setText(mainActivity_userLists.getListName());
+            holder.textListDate.setText(mainActivity_userLists.getListDate());
+            //holder.layout.setBackgroundColor(mainActivity_userLists.isSelected() ? Color.LTGRAY : Color.WHITE);
+
+            /*holder.textView.setOnClickListener(new View.OnClickListener(){
+                public void onClick(View view){
+                    mainactivity_usermemberslistitems.setSelected(!mainactivity_usermemberslistitems.isSelected());
+                    holder.layout.setBackgroundColor(mainactivity_usermemberslistitems.isSelected() ? Color.LTGRAY : Color.WHITE);
+                }
+            });*/
+
+          /* holder.img_options.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //Remove member from recycleview
+                    values_mylists.remove(position);
+                    notifyDataSetChanged();
+                    //Remove member (user-member connection entry of dbo.usermember) from DB
+                    try{
+                        con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
+                        if(con == null){
+
+                        }
+                        else{
+                            //Find memberID from dbo.register
+                            String sql = "SELECT userID FROM register WHERE email = '" + mainActivity_userLists.getName() +"'";
+                            ResultSet rs = con.createStatement().executeQuery(sql);
+                            while (rs.next()) {
+                                memberID = rs.getInt("userID");
+                            }
+                            //Load str (useremail txt) from LoginActivity
+                            Intent in = getIntent();
+                            String str = in.getStringExtra("message_key");
+
+                            sql = "SELECT userID FROM register WHERE email = '" + str +"'";
+                            ResultSet rs2 = con.createStatement().executeQuery(sql);
+                            while (rs2.next()) {
+                                userID = rs2.getInt("userID");
+                            }
+                            //Delete user-member connection entry from dbo.usermember
+                            sql = "DELETE FROM usermember WHERE userID = " + userID + " AND " + "memberID = "+ memberID ;
+                            ResultSet rs3 = con.createStatement().executeQuery(sql);
+
+                            //Refresh Member-List
+                            itemArrayList = new ArrayList<MainActivity_UsermembersListItems>();
+                            SyncData orderData = new SyncData();
+                            orderData.execute("");
+                        }
+
+                    }catch (Exception e){
+                        status.setText("Error");
+                    }
+                    status.setText("Member "+ mainActivity_userLists.getName() +" deleted");
+                }
+            });*/
+        }
+
+        // get item count returns the list item count
+        @Override
+        public int getItemCount() {
+            return values_mylists == null ? 0 : values_mylists.size();
+        }
+
+    }
+    //End RecyclerView.Adapter_Userlist: MyAppAdapter_Userlist-----------------------------------------------------
+
 
     //Start RecyclerView.Adapter: MyAppAdapter---------------------------------------------------
     public class MyAppAdapter extends RecyclerView.Adapter<MyAppAdapter.ViewHolder> {
