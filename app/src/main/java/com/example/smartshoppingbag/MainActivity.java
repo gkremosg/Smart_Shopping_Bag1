@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
@@ -30,6 +31,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.sql.Connection;
@@ -113,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         connectionClass = new ConnectionClass();
 
         // Calling AsyncTask/SyncData for Mymembers recyclerview
-        SyncData orderData = new SyncData();
+        SyncData_MyMembers orderData = new SyncData_MyMembers();
         orderData.execute("");
 
         // Calling AsyncTask/SyncData for MyLists recyclerview
@@ -125,9 +127,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 new MainActivity.checkmember().execute("");
-                // Calling AsyncTask/SyncData (Refresh recyclerViewMyMembers)
+                // Calling AsyncTask/SyncData_MyMembers (Refresh recyclerViewMyMembers)
                 itemArrayList = new ArrayList<MainActivity_UsermembersListItems>();
-                SyncData orderData = new SyncData();
+                SyncData_MyMembers orderData = new SyncData_MyMembers();
                 orderData.execute("");
             }
         });
@@ -232,8 +234,8 @@ public class MainActivity extends AppCompatActivity {
     //End AsyncTask/SyncData to Load Data to recyclerViewMyLists-------------------------------
 
 
-    //Start AsyncTask/SyncData to Load Data to recyclerViewMyMembers-----------------------------
-    private class SyncData extends AsyncTask<String, String, String>
+    //Start AsyncTask/SyncData_MyMembers to Load Data to recyclerViewMyMembers-----------------------------
+    private class SyncData_MyMembers extends AsyncTask<String, String, String>
     {
         String msg = "Internet/DB_Credentials/Windows_FireWall_TurnOn Error, See Android Monitor in the bottom For details!";
         ProgressDialog progress;
@@ -332,6 +334,10 @@ public class MainActivity extends AppCompatActivity {
     public class MyAppAdapter_Userlist extends RecyclerView.Adapter<MyAppAdapter_Userlist.ViewHolder> {
         private List<MainActivity_UserLists> values_mylists;
         public Context context;
+        //private int currentItem = ;
+        //new code
+        private int checkedPosition = -1;
+        //end new code
 
         public class ViewHolder extends RecyclerView.ViewHolder
         {
@@ -339,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
             public TextView textListName;
             public TextView textListDate;
             public View layout;
-            public ImageView img_options;
+            public ImageView mylist_popup_options;
 
             public ViewHolder(View view)
             {
@@ -347,8 +353,10 @@ public class MainActivity extends AppCompatActivity {
                 layout = view;
                 textListName = (TextView) view.findViewById(R.id.textListName);
                 textListDate = (TextView) view.findViewById(R.id.textListDate);
-                img_options = itemView.findViewById(R.id.img_options);
+                mylist_popup_options = itemView.findViewById(R.id.img_options);
             }
+
+
         }
 
         // Constructor
@@ -374,16 +382,34 @@ public class MainActivity extends AppCompatActivity {
             final MainActivity_UserLists mainActivity_userLists = values_mylists.get(position);
             holder.textListName.setText(mainActivity_userLists.getListName());
             holder.textListDate.setText(mainActivity_userLists.getListDate());
-            //holder.layout.setBackgroundColor(mainActivity_userLists.isSelected() ? Color.LTGRAY : Color.WHITE);
 
-            /*holder.textView.setOnClickListener(new View.OnClickListener(){
-                public void onClick(View view){
-                    mainactivity_usermemberslistitems.setSelected(!mainactivity_usermemberslistitems.isSelected());
-                    holder.layout.setBackgroundColor(mainactivity_usermemberslistitems.isSelected() ? Color.LTGRAY : Color.WHITE);
+
+            holder.mylist_popup_options.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    checkedPosition = position;
+                    status.setText("Checked Position is  "+ checkedPosition);
+                    notifyDataSetChanged();
+
+
+                    PopupMenu popupMenu = new PopupMenu(context, view);
+                    popupMenu.getMenuInflater().inflate(R.menu.mylist_popup, popupMenu.getMenu());
+                    popupMenu.show();
                 }
-            });*/
 
-          /* holder.img_options.setOnClickListener(new View.OnClickListener() {
+
+
+
+            });
+
+            //highlights only the selected position
+            if(checkedPosition==position){
+                holder.layout.setBackgroundColor(Color.LTGRAY);
+            } else {
+                holder.layout.setBackgroundColor(Color.WHITE);
+            }
+
+               /* holder.img_options.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     //Remove member from recycleview
@@ -438,6 +464,20 @@ public class MainActivity extends AppCompatActivity {
     }
     //End RecyclerView.Adapter_Userlist: MyAppAdapter_Userlist-----------------------------------------------------
 
+    //new code
+    public class Selection_Userlist implements Serializable {
+
+        private boolean isChecked = false;
+
+        public boolean isChecked() {
+            return isChecked;
+        }
+
+        public void setChecked(boolean checked) {
+            isChecked = checked;
+        }
+    }
+    //end new code
 
     //Start RecyclerView.Adapter: MyAppAdapter---------------------------------------------------
     public class MyAppAdapter extends RecyclerView.Adapter<MyAppAdapter.ViewHolder> {
@@ -523,7 +563,7 @@ public class MainActivity extends AppCompatActivity {
 
                             //Refresh Member-List
                             itemArrayList = new ArrayList<MainActivity_UsermembersListItems>();
-                            SyncData orderData = new SyncData();
+                            SyncData_MyMembers orderData = new SyncData_MyMembers();
                             orderData.execute("");
                         }
 
