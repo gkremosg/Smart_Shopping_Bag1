@@ -61,19 +61,16 @@ public class MainActivity extends AppCompatActivity {
     String memberemail;
     String useremail;
     String listname;
+    Integer listID;
 
     private ArrayList<MainActivity_UsermembersListItems> itemArrayList; //List items Array
     private ArrayList<MainActivity_UserLists> itemArrayMylists; //List items Array
-
     private MyAppAdapter myAppAdapter; //Array Adapter
     private MyAppAdapter_Userlist myAppAdapter_userlist; //Array Adapter
-
     private RecyclerView recyclerViewMyMembers; //RecyclerView
     private RecyclerView.LayoutManager mLayoutManager;
     private boolean success = false; // boolean
-
     private RecyclerView recyclerViewMyLists; //RecyclerView
-
     private ConnectionClass connectionClass; //Connection Class Variable
     //End MainActivity Declarations--------------------------------------------------------------
 
@@ -108,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         itemArrayMylists = new ArrayList<MainActivity_UserLists>();
         recyclerViewMyLists = (RecyclerView) findViewById(R.id.recyclerViewMyLists);
         recyclerViewMyLists.setHasFixedSize(true);
+
         //use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
         recyclerViewMyLists.setLayoutManager(mLayoutManager);
@@ -132,6 +130,15 @@ public class MainActivity extends AppCompatActivity {
                 itemArrayList = new ArrayList<MainActivity_UsermembersListItems>();
                 SyncData_MyMembers orderData = new SyncData_MyMembers();
                 orderData.execute("");
+            }
+        });
+
+        createNewListbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,ListItemsActivity.class);
+                startActivity(intent);
+
             }
         });
     }
@@ -228,7 +235,6 @@ public class MainActivity extends AppCompatActivity {
                 {
 
                 }
-
             }
         }
     }
@@ -335,10 +341,7 @@ public class MainActivity extends AppCompatActivity {
     public class MyAppAdapter_Userlist extends RecyclerView.Adapter<MyAppAdapter_Userlist.ViewHolder> {
         private List<MainActivity_UserLists> values_mylists;
         public Context context;
-        //private int currentItem = ;
-        //new code
         private int checkedPosition = -1;
-        //end new code
 
         public class ViewHolder extends RecyclerView.ViewHolder
         {
@@ -356,8 +359,6 @@ public class MainActivity extends AppCompatActivity {
                 textListDate = (TextView) view.findViewById(R.id.textListDate);
                 mylist_popup_options = itemView.findViewById(R.id.img_options);
             }
-
-
         }
 
         // Constructor
@@ -384,7 +385,6 @@ public class MainActivity extends AppCompatActivity {
             holder.textListName.setText(mainActivity_userLists.getListName());
             holder.textListDate.setText(mainActivity_userLists.getListDate());
 
-
             holder.mylist_popup_options.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
@@ -404,27 +404,51 @@ public class MainActivity extends AppCompatActivity {
                             {
                                 case R.id.edit:
 
-                                   // listname =
-
+                                    listname = values_mylists.get(position).getListName();
+                                    //Toast.makeText(context, listname, Toast.LENGTH_SHORT).show();
                                     Intent intentMain = new Intent(MainActivity.this, ListItemsActivity.class);
-                                   // intentMain.putExtra("message_key", str);
+
+                                    intentMain.putExtra("message_key", listname);
                                     startActivity(intentMain);
 
                                     break;
                                 case R.id.delete:
                                     Toast.makeText(context, "Delete clicked", Toast.LENGTH_SHORT).show();
-                                    break;
+
+                                //Remove list from recycleview
+                                values_mylists.remove(position);
+                                notifyDataSetChanged();
+
+                                //Remove list from DB
+                                try{
+                                    con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
+                                    if(con == null){
+
+                                    }
+                                    else{
+                                        //Delete list entry from dbo.userlist
+                                        String sql = "DELETE FROM userlist WHERE listID = " + listID ;
+                                        ResultSet rs1 = con.createStatement().executeQuery(sql);
+
+                                        //Refresh List List
+                                        itemArrayMylists = new ArrayList<MainActivity_UserLists>();
+                                        SyncData_MyLists orderData = new SyncData_MyLists();
+                                        orderData.execute("");
+
+                                        break;
+                                    }
+
+                                }catch (Exception e){
+                                    status.setText("Error");
+                                }
+                                status.setText("List "+ mainActivity_userLists.getListName() +" deleted");
+
                             }
 
                             return false;
                         }
                     });
-
                 }
-
-
-
-
             });
 
             //highlights only the selected position
@@ -433,51 +457,6 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 holder.layout.setBackgroundColor(Color.WHITE);
             }
-
-               /* holder.img_options.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //Remove member from recycleview
-                    values_mylists.remove(position);
-                    notifyDataSetChanged();
-                    //Remove member (user-member connection entry of dbo.usermember) from DB
-                    try{
-                        con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
-                        if(con == null){
-
-                        }
-                        else{
-                            //Find memberID from dbo.register
-                            String sql = "SELECT userID FROM register WHERE email = '" + mainActivity_userLists.getName() +"'";
-                            ResultSet rs = con.createStatement().executeQuery(sql);
-                            while (rs.next()) {
-                                memberID = rs.getInt("userID");
-                            }
-                            //Load str (useremail txt) from LoginActivity
-                            Intent in = getIntent();
-                            String str = in.getStringExtra("message_key");
-
-                            sql = "SELECT userID FROM register WHERE email = '" + str +"'";
-                            ResultSet rs2 = con.createStatement().executeQuery(sql);
-                            while (rs2.next()) {
-                                userID = rs2.getInt("userID");
-                            }
-                            //Delete user-member connection entry from dbo.usermember
-                            sql = "DELETE FROM usermember WHERE userID = " + userID + " AND " + "memberID = "+ memberID ;
-                            ResultSet rs3 = con.createStatement().executeQuery(sql);
-
-                            //Refresh Member-List
-                            itemArrayList = new ArrayList<MainActivity_UsermembersListItems>();
-                            SyncData orderData = new SyncData();
-                            orderData.execute("");
-                        }
-
-                    }catch (Exception e){
-                        status.setText("Error");
-                    }
-                    status.setText("Member "+ mainActivity_userLists.getName() +" deleted");
-                }
-            });*/
         }
 
         // get item count returns the list item count
@@ -485,7 +464,6 @@ public class MainActivity extends AppCompatActivity {
         public int getItemCount() {
             return values_mylists == null ? 0 : values_mylists.size();
         }
-
     }
     //End RecyclerView.Adapter_Userlist: MyAppAdapter_Userlist-----------------------------------------------------
 
@@ -554,6 +532,7 @@ public class MainActivity extends AppCompatActivity {
                     holder.layout.setBackgroundColor(mainactivity_usermemberslistitems.isSelected() ? Color.LTGRAY : Color.WHITE);
                 }
             });
+
             holder.removeImg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -679,10 +658,12 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("NewApi")
     public Connection connectionClass(String user, String password, String database, String server){
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         Connection connection = null;
         String connectionURL = null;
+
         try{
             Class.forName("net.sourceforge.jtds.jdbc.Driver");
             connectionURL = "jdbc:jtds:sqlserver://" + server+"/" + database + ";user=" + user + ";password=" + password + ";";
@@ -693,7 +674,5 @@ public class MainActivity extends AppCompatActivity {
 
         return connection;
     }
-
-
 }
 //End Code for Main Activity------------------------------------------------------------------------

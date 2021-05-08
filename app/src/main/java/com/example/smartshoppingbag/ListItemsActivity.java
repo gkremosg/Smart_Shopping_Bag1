@@ -1,6 +1,7 @@
 package com.example.smartshoppingbag;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
@@ -26,6 +27,11 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
                 showDatePickerDialog();
             }
         });
+
+        //Load listname from MainActivity
+        Intent intent = getIntent();
+        String str = intent.getStringExtra("message_key");
+        listNameText.setText("Selected list " + str);
 
     }
 
