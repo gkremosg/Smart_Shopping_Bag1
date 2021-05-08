@@ -25,6 +25,10 @@
             android:name=".MainActivity"
             android:parentActivityName=".LoginActivity">
         </activity>
+        <activity
+            android:name=".ListItemsActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
         <!--
         <activity
             android:name=".AddNewMember"

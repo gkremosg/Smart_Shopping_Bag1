@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     Integer memberID;
     String memberemail;
     String useremail;
+    String listname;
 
     private ArrayList<MainActivity_UsermembersListItems> itemArrayList; //List items Array
     private ArrayList<MainActivity_UserLists> itemArrayMylists; //List items Array
@@ -391,10 +392,34 @@ public class MainActivity extends AppCompatActivity {
                     status.setText("Checked Position is  "+ checkedPosition);
                     notifyDataSetChanged();
 
-
                     PopupMenu popupMenu = new PopupMenu(context, view);
                     popupMenu.getMenuInflater().inflate(R.menu.mylist_popup, popupMenu.getMenu());
                     popupMenu.show();
+
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+
+                            switch (item.getItemId())
+                            {
+                                case R.id.edit:
+
+                                   // listname =
+
+                                    Intent intentMain = new Intent(MainActivity.this, ListItemsActivity.class);
+                                   // intentMain.putExtra("message_key", str);
+                                    startActivity(intentMain);
+
+                                    break;
+                                case R.id.delete:
+                                    Toast.makeText(context, "Delete clicked", Toast.LENGTH_SHORT).show();
+                                    break;
+                            }
+
+                            return false;
+                        }
+                    });
+
                 }
 
 
