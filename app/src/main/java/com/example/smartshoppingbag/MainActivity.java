@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     String memberemail;
     String useremail;
     String listname;
-    Integer listID;
+    String listID;
 
     private ArrayList<MainActivity_UsermembersListItems> itemArrayList; //List items Array
     private ArrayList<MainActivity_UserLists> itemArrayMylists; //List items Array
@@ -182,8 +182,8 @@ public class MainActivity extends AppCompatActivity {
                         userID = rs2.getInt("userID");
                     }
 
-                    //Find emails from joined members of the logged-in-user
-                    sql = "SELECT listname, listdate FROM userlist WHERE userID = "+ userID + " ORDER BY listdate";
+                    //Find userlist information of the logged-in-user
+                    sql = "SELECT listname, listID, listdate FROM userlist WHERE userID = "+ userID + " ORDER BY listdate";
                     ResultSet rs = con.createStatement().executeQuery(sql);
 
                     if (rs != null) // if resultset not null, I add items to itemArraylist using class created
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                         while (rs.next())
                         {
                             try {
-                                itemArrayMylists.add(new MainActivity_UserLists(rs.getString("listname"), rs.getString("listdate")));
+                                itemArrayMylists.add(new MainActivity_UserLists(rs.getString("listname"), rs.getString("listdate"), rs.getString("listID")));
                                 status.setText("Second itemArrayMylists Query successfull");
 
                             } catch (Exception ex) {
@@ -337,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
     }
     //End AsyncTask/SyncData to Load Data to recyclerViewMyMembers-------------------------------
 
-    //Start RecyclerView.Adapter: MyAppAdapter---------------------------------------------------
+    //Start RecyclerView.Adapter: MyAppAdapter_UserList---------------------------------------------------
     public class MyAppAdapter_Userlist extends RecyclerView.Adapter<MyAppAdapter_Userlist.ViewHolder> {
         private List<MainActivity_UserLists> values_mylists;
         public Context context;
@@ -348,6 +348,7 @@ public class MainActivity extends AppCompatActivity {
             // public textView and layout
             public TextView textListName;
             public TextView textListDate;
+            public TextView textListID;
             public View layout;
             public ImageView mylist_popup_options;
 
@@ -355,8 +356,12 @@ public class MainActivity extends AppCompatActivity {
             {
                 super(view);
                 layout = view;
+
                 textListName = (TextView) view.findViewById(R.id.textListName);
                 textListDate = (TextView) view.findViewById(R.id.textListDate);
+                textListID = (TextView) view.findViewById(R.id.textListID);
+                textListID.setVisibility(View.GONE);
+
                 mylist_popup_options = itemView.findViewById(R.id.img_options);
             }
         }
@@ -384,6 +389,7 @@ public class MainActivity extends AppCompatActivity {
             final MainActivity_UserLists mainActivity_userLists = values_mylists.get(position);
             holder.textListName.setText(mainActivity_userLists.getListName());
             holder.textListDate.setText(mainActivity_userLists.getListDate());
+            holder.textListID.setText(mainActivity_userLists.getListID());
 
             holder.mylist_popup_options.setOnClickListener(new View.OnClickListener(){
                 @Override
@@ -404,45 +410,50 @@ public class MainActivity extends AppCompatActivity {
                             {
                                 case R.id.edit:
 
-                                    listname = values_mylists.get(position).getListName();
+                                    listID = values_mylists.get(position).getListID();
                                     //Toast.makeText(context, listname, Toast.LENGTH_SHORT).show();
-                                    Intent intentMain = new Intent(MainActivity.this, ListItemsActivity.class);
+                                    Intent intentMain_edit = new Intent(MainActivity.this, ListItemsActivity.class);
 
-                                    intentMain.putExtra("message_key", listname);
-                                    startActivity(intentMain);
+                                    intentMain_edit.putExtra("message_key", listID);
+                                    startActivity(intentMain_edit);
 
                                     break;
+
                                 case R.id.delete:
+
+                                    listID = values_mylists.get(position).getListID();
+                                    //Toast.makeText(context, listname, Toast.LENGTH_SHORT).show();
+
                                     Toast.makeText(context, "Delete clicked", Toast.LENGTH_SHORT).show();
 
-                                //Remove list from recycleview
-                                values_mylists.remove(position);
-                                notifyDataSetChanged();
+                                    //Remove list from recycleview
+                                    values_mylists.remove(position);
+                                    notifyDataSetChanged();
 
-                                //Remove list from DB
-                                try{
-                                    con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
-                                    if(con == null){
+                                    //Remove list from DB
+                                    try{
+                                        con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
+                                        if(con == null){
 
-                                    }
-                                    else{
-                                        //Delete list entry from dbo.userlist
-                                        String sql = "DELETE FROM userlist WHERE listID = " + listID ;
-                                        ResultSet rs1 = con.createStatement().executeQuery(sql);
+                                        } else {
 
-                                        //Refresh List List
-                                        itemArrayMylists = new ArrayList<MainActivity_UserLists>();
-                                        SyncData_MyLists orderData = new SyncData_MyLists();
-                                        orderData.execute("");
+                                            //Delete list entry from dbo.userlist
+                                            String sql = "DELETE FROM userlist WHERE listID = " + listID ;
+                                            ResultSet rs1 = con.createStatement().executeQuery(sql);
 
-                                        break;
-                                    }
+                                            //Refresh List List
+                                            itemArrayMylists = new ArrayList<MainActivity_UserLists>();
+                                            SyncData_MyLists orderData = new SyncData_MyLists();
+                                            orderData.execute("");
 
-                                }catch (Exception e){
+                                            //break;
+                                        }
+
+                                } catch (Exception e){
                                     status.setText("Error");
                                 }
-                                status.setText("List "+ mainActivity_userLists.getListName() +" deleted");
 
+                                status.setText("List "+ mainActivity_userLists.getListName() +" deleted");
                             }
 
                             return false;
@@ -636,7 +647,7 @@ public class MainActivity extends AppCompatActivity {
                         ResultSet rs4 = con.createStatement().executeQuery(sql);
                         status.setText(useremail + " has added " + memberemail + " as member");
                     } else {
-                        status.setText("Member "+ memberemail +" is already in your list");
+                        status.setText("Member "+ memberemail +" is already in your list or doesn't exist in the application");
                     }
                 }
 
