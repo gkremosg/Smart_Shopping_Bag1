@@ -11,7 +11,7 @@
         android:id="@+id/recyclerViewMyListItems"
         android:layout_width="324dp"
         android:layout_height="466dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="120dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,8 +20,9 @@
 
     <TextView
         android:id="@+id/listNameText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="4dp"
+        android:layout_height="14dp"
+        android:layout_marginStart="200dp"
         android:text=""
         app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,9 +32,12 @@
         android:id="@+id/showCalender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="50dp"
         android:text="Calender"
         android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,10 +45,29 @@
         android:id="@+id/dateText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="50dp"
         android:text=""
-        app:layout_constraintBottom_toTopOf="@+id/listNameText"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
         app:layout_constraintEnd_toStartOf="@+id/showCalender"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/AddNewMember"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="50dp"
+        android:ems="10"
+        android:hint="Enter List Name"
+        android:inputType="textEmailAddress"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
+        app:layout_constraintEnd_toStartOf="@+id/dateText"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

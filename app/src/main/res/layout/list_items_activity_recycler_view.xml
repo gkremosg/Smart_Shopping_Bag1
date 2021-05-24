@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <RelativeLayout
+        android:id="@+id/recyclerViewListActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:padding="5dp">
+
+
+        <!--
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    app:srcCompat="@mipmap/ic_launcher"
+                    android:id="@+id/imageView"
+                    android:layout_marginRight="5dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+        -->
+
+
+        <EditText
+            android:id="@+id/editTextListItem"
+            android:layout_width="175dp"
+            android:layout_height="29dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="5dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Add an item"
+            android:textSize="8sp" />
+
+        <Spinner
+            android:id="@+id/itemCategory"
+            android:layout_width="90dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/editTextListItem" />
+
+        <Spinner
+            android:id="@+id/cost_before_comma"
+            android:layout_width="30dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/itemCategory" />
+
+        <TextView
+            android:id="@+id/cost_comma"
+            android:layout_width="5dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@id/cost_before_comma"
+            android:text="," />
+
+        <Spinner
+            android:id="@+id/cost_after_comma"
+            android:layout_width="30dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@id/cost_comma" />
+
+        <ImageView
+            android:id="@+id/img_remove_listitem"
+            android:layout_width="30dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="310dp"
+            android:layout_marginBottom="5dp"
+            android:layout_toEndOf="@id/cost_after_comma"
+            android:src="@drawable/ic_delete"
+            app:tint="@color/colorPrimaryDark" />
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

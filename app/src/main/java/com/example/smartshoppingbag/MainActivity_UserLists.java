@@ -6,8 +6,7 @@ public class MainActivity_UserLists {
 
     private boolean isSelected = false;
 
-    public MainActivity_UserLists(String listname, String listdate, String listID)
-    {
+    public MainActivity_UserLists(String listname, String listdate, String listID){
         this.listname = listname;
         this.listdate = listdate;
         this.listID = listID;
