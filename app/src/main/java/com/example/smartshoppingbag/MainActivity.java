@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
     Integer memberID;
     String memberemail;
     String useremail;
-    String listname;
     String listID;
 
     private ArrayList<MainActivity_UsermembersListItems> itemArrayList; //List items Array

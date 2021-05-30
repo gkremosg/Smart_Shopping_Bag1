@@ -2,26 +2,26 @@ package com.example.smartshoppingbag;
 
 public class ListItemsActivity_RecyclerView {
 
-    public String editTextListItem;
-    public String itemCategory;
+    public String listItem;
+    public String category;
     public Integer cost_before_comma;
     public Integer cost_after_comma;
 
     private boolean isSelected = false;
 
-    public ListItemsActivity_RecyclerView(String editTextListItem, String itemCategory, Integer cost_before_comma, Integer cost_after_comma){
-        this.editTextListItem = editTextListItem;
-        this.itemCategory = itemCategory;
+    public ListItemsActivity_RecyclerView(String listItem, String category, Integer cost_before_comma, Integer cost_after_comma){
+        this.listItem = listItem;
+        this.category = category;
         this.cost_before_comma = cost_before_comma;
         this.cost_after_comma = cost_after_comma;
     }
 
     public String getEditTextListItem() {
-        return editTextListItem;
+        return listItem;
     }
 
     public String getItemCategory() {
-        return itemCategory;
+        return category;
     }
 
     public Integer getCostBeforeComma() {
