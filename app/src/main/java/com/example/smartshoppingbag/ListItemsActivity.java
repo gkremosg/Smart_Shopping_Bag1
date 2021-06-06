@@ -14,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
@@ -44,6 +46,12 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
     private TextView listNameText;
     String listname;
     Connection con;
+    Button savebtn;
+    ImageButton insertbtn;
+    EditText editTextListItem;
+    Spinner itemCategory;
+    Spinner costBeforeComma;
+    Spinner costAfterComma;
 
     private ArrayList<ListItemsActivity_RecyclerView> itemListArray; //Item List Array
     private MyListItemsAdapter myListItemsAdapter; //Array Adapter
@@ -53,10 +61,17 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listitems);
         listNameText = findViewById(R.id.listNameText);
         dateText = findViewById(R.id.dateText);
+        savebtn = (Button)findViewById(R.id.saveChangesMyListItemsButton);
+        insertbtn = (ImageButton)findViewById(R.id.insertItemButton);
+        editTextListItem = (EditText)findViewById(R.id.editTextListItem2);
+        itemCategory = (Spinner)findViewById(R.id.itemCategory2);
+        costBeforeComma = (Spinner)findViewById(R.id.cost_before_comma2);
+        costAfterComma = (Spinner)findViewById(R.id.cost_after_comma2);
 
         findViewById(R.id.showCalender).setOnClickListener(new View.OnClickListener() {
             @Override

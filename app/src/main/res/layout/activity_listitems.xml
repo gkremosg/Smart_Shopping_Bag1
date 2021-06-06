@@ -7,24 +7,36 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".ListItemsActivity">
 
+    <ImageButton
+        android:id="@+id/insertMembersButton"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="60dp"
+        app:layout_constraintEnd_toStartOf="@+id/saveChangesMyListItemsButton"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewMyListItems"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewMyListItems"
         android:layout_width="324dp"
         android:layout_height="466dp"
-        android:layout_marginBottom="120dp"
+        android:layout_marginBottom="32dp"
         android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/selectMembers"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
     <TextView
         android:id="@+id/listNameText"
-        android:layout_width="4dp"
-        android:layout_height="14dp"
-        android:layout_marginStart="200dp"
-        android:text=""
-        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
+        android:layout_width="150dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="230dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -32,7 +44,7 @@
         android:id="@+id/showCalender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="50dp"
         android:text="Calender"
@@ -54,22 +66,123 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/AddNewMember"
+        android:id="@+id/enterListName"
         android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="50dp"
         android:ems="10"
         android:hint="Enter List Name"
         android:inputType="textEmailAddress"
         android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
+        app:layout_constraintBottom_toTopOf="@+id/editTextListItem2"
         app:layout_constraintEnd_toStartOf="@+id/dateText"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.195"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.275" />
+
+    <EditText
+        android:id="@+id/editTextListItem2"
+        android:layout_width="175dp"
+        android:layout_height="35dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:hint="Add an item"
+        android:inputType="textPersonName"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
+        app:layout_constraintEnd_toStartOf="@+id/itemCategory2"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/itemCategory2"
+        android:layout_width="90dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="16dp"
+        android:layout_toEndOf="@id/editTextListItem2"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
+        app:layout_constraintEnd_toStartOf="@+id/cost_before_comma2" />
+
+    <Spinner
+        android:id="@+id/cost_before_comma2"
+        android:layout_width="30dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:layout_toEndOf="@id/itemCategory2"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
+        app:layout_constraintEnd_toStartOf="@+id/cost_comma2" />
+
+    <Spinner
+        android:id="@+id/cost_after_comma2"
+        android:layout_width="30dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="16dp"
+        android:layout_toEndOf="@id/cost_comma2"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
+        app:layout_constraintEnd_toStartOf="@+id/insertItemButton" />
+
+    <TextView
+        android:id="@+id/cost_comma2"
+        android:layout_width="5dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="16dp"
+        android:layout_toEndOf="@id/cost_before_comma2"
+        android:text=","
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
+        app:layout_constraintEnd_toStartOf="@+id/cost_after_comma2" />
+
+    <ImageButton
+        android:id="@+id/insertItemButton"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
+    <Button
+        android:id="@+id/saveChangesMyListItemsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="32dp"
+        android:text="Save"
+        app:layout_constraintBottom_toTopOf="@+id/listNameText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewMyListItems" />
+
+    <Spinner
+        android:id="@+id/selectMembers"
+        android:layout_width="150dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toEndOf="@id/editTextListItem2"
+        app:layout_constraintBottom_toTopOf="@+id/showUserMembers"
+        app:layout_constraintEnd_toStartOf="@+id/insertMembersButton"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/showUserMembers"
+        android:layout_width="150dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="200dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/listNameText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

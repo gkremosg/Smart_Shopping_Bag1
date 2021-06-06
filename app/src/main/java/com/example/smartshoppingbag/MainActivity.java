@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     String useremail;
     String listID;
 
-    private ArrayList<MainActivity_UsermembersListItems> itemArrayList; //List items Array
+    public ArrayList<MainActivity_UsermembersListItems> itemArrayList; //List items Array
     private ArrayList<MainActivity_UserLists> itemArrayMylists; //List items Array
     private MyAppAdapter myAppAdapter; //Array Adapter
     private MyAppAdapter_Userlist myAppAdapter_userlist; //Array Adapter
