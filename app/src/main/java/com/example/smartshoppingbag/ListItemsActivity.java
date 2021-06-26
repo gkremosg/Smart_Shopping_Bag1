@@ -9,11 +9,14 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -29,7 +32,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -49,9 +54,11 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
     Button savebtn;
     ImageButton insertbtn;
     EditText editTextListItem;
-    Spinner itemCategory;
-    Spinner costBeforeComma;
-    Spinner costAfterComma;
+    Spinner itemCategorySpinner_2;
+    Spinner costBeforeCommaSpinner_2;
+    Spinner costAfterCommaSpinner_2;
+    TextView status_listitems;
+    EditText enterListName;
 
     private ArrayList<ListItemsActivity_RecyclerView> itemListArray; //Item List Array
     private MyListItemsAdapter myListItemsAdapter; //Array Adapter
@@ -69,9 +76,13 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
         savebtn = (Button)findViewById(R.id.saveChangesMyListItemsButton);
         insertbtn = (ImageButton)findViewById(R.id.insertItemButton);
         editTextListItem = (EditText)findViewById(R.id.editTextListItem2);
-        itemCategory = (Spinner)findViewById(R.id.itemCategory2);
-        costBeforeComma = (Spinner)findViewById(R.id.cost_before_comma2);
-        costAfterComma = (Spinner)findViewById(R.id.cost_after_comma2);
+        itemCategorySpinner_2 = (Spinner)findViewById(R.id.itemCategory2);
+        costBeforeCommaSpinner_2 = (Spinner)findViewById(R.id.cost_before_comma2);
+        costAfterCommaSpinner_2 = (Spinner)findViewById(R.id.cost_after_comma2);
+        status_listitems = (TextView)findViewById(R.id.status_listitems);
+        enterListName = (EditText)findViewById(R.id.enterListName);
+
+        FillSpinner();
 
         findViewById(R.id.showCalender).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +105,7 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
 
         // Calling AsyncTask/SyncData for Items List recyclerview
         //SyncData_ListItems orderData_ListItems = new SyncData_ListItems();
-      //  orderData_ListItems.execute("");
+        //orderData_ListItems.execute("");
 
         try{
             con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
@@ -118,6 +129,66 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
 
         listNameText.setText("Selected list " + listname);
 
+        //edit text change text on sql, when user enters/corrects his text
+        /*enterListName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String listNameAfter = enterListName.getText().toString();
+                listNameText.setText("Entered list name: " + listNameAfter);
+
+            }
+        });*/
+
+
+        String listNameAfter = enterListName.getText().toString();
+        listNameText.setText("Entered list name: " + listNameAfter);
+
+        enterListName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    String listNameAfter = enterListName.getText().toString();
+                    listNameText.setText("Entered list name: " + listNameAfter);
+                }
+            }
+        });
+    }
+
+    public void FillSpinner() {
+        try {
+            con = connectionClass(ConnectionClass.un.toString(), ConnectionClass.pass.toString(), ConnectionClass.db.toString(), ConnectionClass.server.toString());
+            if (con == null) {
+
+            } else {
+                String query = "select itemcategoryname from itemcategories";
+                PreparedStatement stmt=con.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery();
+
+                ArrayList<String> data = new ArrayList<String>();
+
+                while (rs.next()){
+                    String itemcategoryname = rs.getString( "itemcategoryname");
+                    data.add(itemcategoryname);
+                }
+
+                ArrayAdapter array = new ArrayAdapter(this, android.R.layout.simple_list_item_1,data);
+                itemCategorySpinner_2.setAdapter(array);
+            }
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            status_listitems.setText("Query unsuccessfull");
+        }
     }
 
     public void showDatePickerDialog(){
@@ -385,6 +456,7 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
     @SuppressLint("NewApi")
     public Connection connectionClass(String user, String password, String database, String server){
 
@@ -404,4 +476,6 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
         return connection;
     }
 }
+
+
 
