@@ -88,8 +88,7 @@ public class MainActivity extends AppCompatActivity {
         status = (TextView)findViewById(R.id.status);
 
         //Load str (email txt) from LoginActivity
-        Intent intent = getIntent();
-        String str = intent.getStringExtra("message_key");
+        final String str = getIntent().getStringExtra("message_key_email");
         Welcometext.setText("Welcome " + str);
 
         //itemArrayList and Recyclerview Declaration for member list
@@ -171,8 +170,7 @@ public class MainActivity extends AppCompatActivity {
                 else {
 
                     //Load str (email txt) from LoginActivity
-                    Intent in = getIntent();
-                    String str = in.getStringExtra("message_key");
+                    String str = getIntent().getStringExtra("message_key_email");
 
                     //Find userID from intented str (email of the logged-in-user)
                     String sql = "SELECT userID FROM register WHERE email = '" + str +"'";
@@ -266,9 +264,8 @@ public class MainActivity extends AppCompatActivity {
                     success = false;
                 }
                 else {
-                    //Load str (email txt) from LoginActivity
-                    Intent in = getIntent();
-                    String str = in.getStringExtra("message_key");
+                    //Load (email txt) from LoginActivity
+                    String str = getIntent().getStringExtra("message_key_email");
 
                     //Find userID from intented str (email of the logged-in-user)
                     String sql = "SELECT userID FROM register WHERE email = '" + str +"'";
@@ -412,8 +409,8 @@ public class MainActivity extends AppCompatActivity {
                                     listID = values_mylists.get(position).getListID();
                                     //Toast.makeText(context, listname, Toast.LENGTH_SHORT).show();
                                     Intent intentMain_edit = new Intent(MainActivity.this, ListItemsActivity.class);
-
-                                    intentMain_edit.putExtra("message_key", listID);
+                                    intentMain_edit.putExtra("message_keyID", listID);
+                                    intentMain_edit.putExtra("message_key_email", getIntent().getStringExtra("message_key_email"));
                                     startActivity(intentMain_edit);
 
                                     break;
@@ -564,7 +561,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             //Load str (useremail txt) from LoginActivity
                             Intent in = getIntent();
-                            String str = in.getStringExtra("message_key");
+                            String str = in.getStringExtra("message_key_email");
 
                             sql = "SELECT userID FROM register WHERE email = '" + str +"'";
                             ResultSet rs2 = con.createStatement().executeQuery(sql);
@@ -628,8 +625,7 @@ public class MainActivity extends AppCompatActivity {
                         memberemail = rs.getString("email");
                     }
                     //Load str (email txt) from LoginActivity
-                    Intent in = getIntent();
-                    String str = in.getStringExtra("message_key");
+                    String str = getIntent().getStringExtra("message_key_email");
 
                     sql = "SELECT userID, email FROM register WHERE email = '" + str +"'";
                     ResultSet rs2 = con.createStatement().executeQuery(sql);

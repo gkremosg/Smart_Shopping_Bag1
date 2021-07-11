@@ -29,16 +29,6 @@
             android:name=".ListItemsActivity"
             android:parentActivityName=".MainActivity">
         </activity>
-        <!--
-        <activity
-            android:name=".AddNewMember"
-            android:parentActivityName=".MainActivity">
-            <!-<intent-filter>
-               <action android:name="android.intent.action.MAIN" />
-
-               <category android:name="android.intent.category.LAUNCHER" />
-           </intent-filter>-->
-
 
        </application>
 

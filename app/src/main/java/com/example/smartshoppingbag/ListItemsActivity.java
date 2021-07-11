@@ -35,6 +35,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -50,6 +51,7 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
     private TextView dateText;
     private TextView listNameText;
     String listname;
+    String listdate;
     Connection con;
     Button savebtn;
     ImageButton insertbtn;
@@ -81,8 +83,14 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
         costAfterCommaSpinner_2 = (Spinner)findViewById(R.id.cost_after_comma2);
         status_listitems = (TextView)findViewById(R.id.status_listitems);
         enterListName = (EditText)findViewById(R.id.enterListName);
-
         FillSpinner();
+
+        //Load str (email txt) from LoginActivity and intent to MainActivity
+        /*String str = getIntent().getStringExtra("message_key_email");
+        Toast.makeText(ListItemsActivity.this,"email:"+str,Toast.LENGTH_LONG).show();
+        new Intent(ListItemsActivity.this, MainActivity.class).putExtra("message_key_email", str);*/
+        //
+
 
         findViewById(R.id.showCalender).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,9 +100,7 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
         });
 
         //Load listname from MainActivity
-        Intent intent = getIntent();
-        String listID = intent.getStringExtra("message_key");
-
+        final String listID = getIntent().getStringExtra("message_keyID");
         //itemListArray and Recyclerview Declaration for list Items
         itemListArray = new ArrayList<ListItemsActivity_RecyclerView>();
         recyclerViewMyListItems = (RecyclerView) findViewById(R.id.recyclerViewMyListItems);
@@ -114,10 +120,15 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
             } else {
 
                 //find listname from dbo.userlist
-                String sql = "SELECT listname FROM userlist WHERE listID = " + listID ;
+                String sql = "SELECT listname, listdate FROM userlist WHERE listID = " + listID ;
                 ResultSet rs1 = con.createStatement().executeQuery(sql);
                 while (rs1.next()) {
                     listname = rs1.getString("listname");
+                    listdate = rs1.getString("listdate");
+                    //write Listname in enterListName (Edit Text)
+                    enterListName.setText(listname);
+                    dateText.setText(listdate);
+
                 }
 
             }
@@ -158,6 +169,24 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
                 if(!hasFocus) {
                     String listNameAfter = enterListName.getText().toString();
                     listNameText.setText("Entered list name: " + listNameAfter);
+                    if(listname != listNameAfter){
+                        try {
+                            con = connectionClass(ConnectionClass.un.toString(), ConnectionClass.pass.toString(), ConnectionClass.db.toString(), ConnectionClass.server.toString());
+                            if (con == null) {
+
+                            } else {
+                                String query = "UPDATE userlist SET listname ='" + listNameAfter + "' WHERE listID =" + listID ;
+                                PreparedStatement stmt = con.prepareStatement(query);
+                                ResultSet rs = stmt.executeQuery();
+                                }
+
+                        } catch (Exception e){
+                            System.out.println(e.getMessage());
+                            /*e.printStackTrace();
+                            status_listitems.setText("Listname renamed to" + listNameAfter);*/
+                        }
+
+                    }
                 }
             }
         });
@@ -169,7 +198,7 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
             if (con == null) {
 
             } else {
-                String query = "select itemcategoryname from itemcategories";
+                String query = "SELECT itemcategoryname FROM itemcategories";
                 PreparedStatement stmt=con.prepareStatement(query);
                 ResultSet rs = stmt.executeQuery();
 
@@ -204,8 +233,27 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Integer addmonth = month + 1;
-        String date = dayOfMonth + "/" + addmonth + "/" + year;
+        String date = year + "-" + addmonth + "-" + dayOfMonth;
         dateText.setText(date);
+        //Update Listdate based on ListID
+        final String listID = getIntent().getStringExtra("message_keyID");
+        try{
+            con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
+            if(con == null){
+
+            } else {
+
+                //update listdate in dbo.userlist
+                String query = "UPDATE userlist SET listdate = '" + dateText.getText() + "' WHERE listID =" + listID ;
+                PreparedStatement stmt = con.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery();
+
+                }
+
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            //status.setText("Error");
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

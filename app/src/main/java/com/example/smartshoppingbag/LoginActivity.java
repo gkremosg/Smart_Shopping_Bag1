@@ -101,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                         str = emaillogin.getText().toString();
 
                         Intent intentMain = new Intent(LoginActivity.this, MainActivity.class);
-                        intentMain.putExtra("message_key", str);
+                        intentMain.putExtra("message_key_email", str);
                         startActivity(intentMain);
 
                     } else {
