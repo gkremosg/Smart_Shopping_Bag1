@@ -4,46 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:textAlignment="textStart"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".ListItemsActivity">
-
-    <ImageButton
-        android:id="@+id/insertMembersButton"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="60dp"
-        app:layout_constraintEnd_toStartOf="@+id/saveChangesMyListItemsButton"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerViewMyListItems"
-        app:srcCompat="@android:drawable/ic_input_add" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewMyListItems"
-        android:layout_width="324dp"
-        android:layout_height="430dp"
-        android:layout_marginBottom="32dp"
-        android:scrollbars="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/selectMembers"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-    </androidx.recyclerview.widget.RecyclerView>
-
-    <TextView
-        android:id="@+id/listNameText"
-        android:layout_width="150dp"
-        android:layout_height="18dp"
-        android:layout_marginStart="230dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/showCalender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="5dp"
         android:text="Calender"
@@ -52,24 +21,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/dateText"
+    <Button
+        android:id="@+id/saveChangesMyListItemsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="50dp"
-        android:text=""
-        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
-        app:layout_constraintEnd_toStartOf="@+id/showCalender"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="32dp"
+        android:text="Save"
+        app:layout_constraintBottom_toTopOf="@+id/listNameText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewMyListItems" />
 
     <EditText
         android:id="@+id/enterListName"
         android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="7dp"
         android:ems="10"
@@ -85,10 +54,10 @@
 
     <EditText
         android:id="@+id/editTextListItem2"
-        android:layout_width="140dp"
+        android:layout_width="115dp"
         android:layout_height="40dp"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="5dp"
+        android:layout_marginBottom="40dp"
         android:ems="10"
         android:hint="Add an item"
         android:inputType="textPersonName"
@@ -96,51 +65,20 @@
         app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Spinner
-        android:id="@+id/itemCategory2"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:layout_toEndOf="@id/editTextListItem2"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
-        app:layout_constraintStart_toEndOf="@+id/editTextListItem2" />
-
-    <Spinner
-        android:id="@+id/cost_before_comma2"
-        android:layout_width="60dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="5dp"
-        android:layout_toEndOf="@id/itemCategory2"
-        android:entries="@array/costbeforecomma"
-        android:verticalScrollbarPosition="right"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
-        app:layout_constraintStart_toEndOf="@+id/itemCategory2" />
-
-    <Spinner
-        android:id="@+id/cost_after_comma2"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="2dp"
-        android:layout_toEndOf="@id/cost_comma2"
-        android:entries="@array/costaftercomma"
-        android:verticalScrollbarPosition="left"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
-        app:layout_constraintStart_toEndOf="@+id/cost_comma2" />
-
-    <TextView
-        android:id="@+id/cost_comma2"
-        android:layout_width="5dp"
+    <ImageButton
+        android:id="@+id/insertMembersButton"
+        android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_marginStart="2dp"
-        android:layout_marginBottom="6dp"
-        android:layout_toEndOf="@id/cost_before_comma2"
-        android:text=","
-        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
-        app:layout_constraintStart_toEndOf="@+id/cost_before_comma2" />
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="60dp"
+        app:layout_constraintEnd_toStartOf="@+id/saveChangesMyListItemsButton"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewMyListItems"
+        app:srcCompat="@android:drawable/ic_input_add" />
 
     <ImageButton
         android:id="@+id/insertItemButton"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="6dp"
         app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
@@ -148,17 +86,39 @@
         app:layout_constraintStart_toEndOf="@+id/cost_after_comma2"
         app:srcCompat="@android:drawable/ic_input_add" />
 
-    <Button
-        android:id="@+id/saveChangesMyListItemsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="32dp"
-        android:text="Save"
-        app:layout_constraintBottom_toTopOf="@+id/listNameText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerViewMyListItems" />
+    <Spinner
+        android:id="@+id/itemCategory2"
+        android:layout_width="160dp"
+        android:layout_height="40dp"
+        android:layout_toEndOf="@id/editTextListItem2"
+        android:textAlignment="textStart"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/cost_before_comma2"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@id/itemCategory2"
+        android:entries="@array/costbeforecomma"
+        android:textAlignment="inherit"
+        android:verticalScrollbarPosition="right"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
+        app:layout_constraintStart_toEndOf="@+id/itemCategory2" />
+
+    <Spinner
+        android:id="@+id/cost_after_comma2"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="2dp"
+        android:layout_toEndOf="@id/cost_comma2"
+        android:entries="@array/costaftercomma"
+        android:textAlignment="textEnd"
+        android:verticalScrollbarPosition="left"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
+        app:layout_constraintStart_toEndOf="@+id/cost_comma2" />
 
     <Spinner
         android:id="@+id/selectMembers"
@@ -170,6 +130,37 @@
         app:layout_constraintBottom_toTopOf="@+id/showUserMembers"
         app:layout_constraintEnd_toStartOf="@+id/insertMembersButton"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/listNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/dateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="50dp"
+        android:text=""
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
+        app:layout_constraintEnd_toStartOf="@+id/showCalender"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/cost_comma2"
+        android:layout_width="5dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginBottom="6dp"
+        android:layout_toEndOf="@id/cost_before_comma2"
+        android:text=","
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMyListItems"
+        app:layout_constraintStart_toEndOf="@+id/cost_before_comma2" />
 
     <TextView
         android:id="@+id/showUserMembers"
@@ -190,6 +181,18 @@
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@+id/recyclerViewMyListItems"
         tools:layout_editor_absoluteX="16dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewMyListItems"
+        android:layout_width="wrap_content"
+        android:layout_height="430dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginBottom="32dp"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/selectMembers"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

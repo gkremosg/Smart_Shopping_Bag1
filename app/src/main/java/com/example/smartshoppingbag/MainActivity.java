@@ -45,10 +45,10 @@ import java.util.List;
 //import androidx.appcompat.widget.Toolbar;
 
 
-//Start Code for Main Activity----------------------------------------------------------------------
+//1.Start Code for Main Activity----------------------------------------------------------------------
 public class MainActivity extends AppCompatActivity {
 
-    //Start MainActivity Declarations------------------------------------------------------------
+    //1.1.Start MainActivity Declarations------------------------------------------------------------
     Button createNewListbtn;
     Button showmycostsbtn;
     TextView Welcometext;
@@ -73,12 +73,11 @@ public class MainActivity extends AppCompatActivity {
     private ConnectionClass connectionClass; //Connection Class Variable
     //End MainActivity Declarations--------------------------------------------------------------
 
-    //Start onCreate MainActivity ---------------------------------------------------------------
+    //1.2.Start onCreate MainActivity ---------------------------------------------------------------
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.content_main);
         showmycostsbtn = (Button)findViewById(R.id.showmycostsbtn);
         addmemberbtn = (Button)findViewById(R.id.addmemberbtn);
@@ -87,9 +86,9 @@ public class MainActivity extends AppCompatActivity {
         emailmembertoadd = (EditText)findViewById(R.id.AddNewMember);
         status = (TextView)findViewById(R.id.status);
 
-        //Load str (email txt) from LoginActivity
-        final String str = getIntent().getStringExtra("message_key_email");
-        Welcometext.setText("Welcome " + str);
+        //Load globaluseremail (set from LoginActivity)
+        GlobalClass globalClass = (GlobalClass) getApplicationContext();
+        Welcometext.setText("Welcome " + globalClass.getGlobaluseremail());
 
         //itemArrayList and Recyclerview Declaration for member list
         itemArrayList = new ArrayList<MainActivity_UsermembersListItems>();
@@ -142,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
     }
     //End onCreate MainActivity -----------------------------------------------------------------
 
-    //Start AsyncTask/SyncData to Load Data to recyclerViewMyLists-----------------------------
+    //1.3.1.Start AsyncTask/SyncData to Load Data to recyclerViewMyLists-----------------------------
     private class SyncData_MyLists extends AsyncTask<String, String, String>
     {
         String msg = "Internet/DB_Credentials/Windows_FireWall_TurnOn Error, See Android Monitor in the bottom For details!";
@@ -169,11 +168,11 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
 
-                    //Load str (email txt) from LoginActivity
-                    String str = getIntent().getStringExtra("message_key_email");
+                    //Load globaluseremail (set from LoginActivity)
+                    GlobalClass globalClass = (GlobalClass) getApplicationContext();
 
-                    //Find userID from intented str (email of the logged-in-user)
-                    String sql = "SELECT userID FROM register WHERE email = '" + str +"'";
+                    //Find userID from globaluseremail (email of the logged-in-user)
+                    String sql = "SELECT userID FROM register WHERE email = '" + globalClass.getGlobaluseremail() +"'";
                     ResultSet rs2 = con.createStatement().executeQuery(sql);
                     while (rs2.next()) {
                         userID = rs2.getInt("userID");
@@ -189,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
                         {
                             try {
                                 itemArrayMylists.add(new MainActivity_UserLists(rs.getString("listname"), rs.getString("listdate"), rs.getString("listID")));
-                                status.setText("Second itemArrayMylists Query successfull");
+                                //status.setText("Second itemArrayMylists Query successfull");
 
                             } catch (Exception ex) {
                                 ex.printStackTrace();
@@ -238,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
     //End AsyncTask/SyncData to Load Data to recyclerViewMyLists-------------------------------
 
 
-    //Start AsyncTask/SyncData_MyMembers to Load Data to recyclerViewMyMembers-----------------------------
+    //1.3.2.Start AsyncTask/SyncData_MyMembers to Load Data to recyclerViewMyMembers-----------------------------
     private class SyncData_MyMembers extends AsyncTask<String, String, String>
     {
         String msg = "Internet/DB_Credentials/Windows_FireWall_TurnOn Error, See Android Monitor in the bottom For details!";
@@ -264,11 +263,11 @@ public class MainActivity extends AppCompatActivity {
                     success = false;
                 }
                 else {
-                    //Load (email txt) from LoginActivity
-                    String str = getIntent().getStringExtra("message_key_email");
+                    //Load globaluseremail (set from LoginActivity)
+                    GlobalClass globalClass = (GlobalClass) getApplicationContext();
 
                     //Find userID from intented str (email of the logged-in-user)
-                    String sql = "SELECT userID FROM register WHERE email = '" + str +"'";
+                    String sql = "SELECT userID FROM register WHERE email = '" + globalClass.getGlobaluseremail() +"'";
                     ResultSet rs2 = con.createStatement().executeQuery(sql);
                     while (rs2.next()) {
                         userID = rs2.getInt("userID");
@@ -333,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
     }
     //End AsyncTask/SyncData to Load Data to recyclerViewMyMembers-------------------------------
 
-    //Start RecyclerView.Adapter: MyAppAdapter_UserList---------------------------------------------------
+    //1.4.1.Start RecyclerView.Adapter: MyAppAdapter_UserList---------------------------------------------------
     public class MyAppAdapter_Userlist extends RecyclerView.Adapter<MyAppAdapter_Userlist.ViewHolder> {
         private List<MainActivity_UserLists> values_mylists;
         public Context context;
@@ -357,7 +356,6 @@ public class MainActivity extends AppCompatActivity {
                 textListDate = (TextView) view.findViewById(R.id.textListDate);
                 textListID = (TextView) view.findViewById(R.id.textListID);
                 textListID.setVisibility(View.GONE);
-
                 mylist_popup_options = itemView.findViewById(R.id.img_options);
             }
         }
@@ -410,7 +408,8 @@ public class MainActivity extends AppCompatActivity {
                                     //Toast.makeText(context, listname, Toast.LENGTH_SHORT).show();
                                     Intent intentMain_edit = new Intent(MainActivity.this, ListItemsActivity.class);
                                     intentMain_edit.putExtra("message_keyID", listID);
-                                    intentMain_edit.putExtra("message_key_email", getIntent().getStringExtra("message_key_email"));
+                                    GlobalClass globalClass = (GlobalClass) getApplicationContext();
+                                    globalClass.setGloballistID(listID);
                                     startActivity(intentMain_edit);
 
                                     break;
@@ -474,22 +473,7 @@ public class MainActivity extends AppCompatActivity {
     }
     //End RecyclerView.Adapter_Userlist: MyAppAdapter_Userlist-----------------------------------------------------
 
-    //new code
-    public class Selection_Userlist implements Serializable {
-
-        private boolean isChecked = false;
-
-        public boolean isChecked() {
-            return isChecked;
-        }
-
-        public void setChecked(boolean checked) {
-            isChecked = checked;
-        }
-    }
-    //end new code
-
-    //Start RecyclerView.Adapter: MyAppAdapter---------------------------------------------------
+    //1.4.2.Start RecyclerView.Adapter: MyAppAdapter---------------------------------------------------
     public class MyAppAdapter extends RecyclerView.Adapter<MyAppAdapter.ViewHolder> {
         private List<MainActivity_UsermembersListItems> values;
         public Context context;
@@ -559,11 +543,10 @@ public class MainActivity extends AppCompatActivity {
                             while (rs.next()) {
                                 memberID = rs.getInt("userID");
                             }
-                            //Load str (useremail txt) from LoginActivity
-                            Intent in = getIntent();
-                            String str = in.getStringExtra("message_key_email");
+                            //Load globaluseremail (set from LoginActivity)
+                            GlobalClass globalClass = (GlobalClass) getApplicationContext();
 
-                            sql = "SELECT userID FROM register WHERE email = '" + str +"'";
+                            sql = "SELECT userID FROM register WHERE email = '" + globalClass.getGlobaluseremail() +"'";
                             ResultSet rs2 = con.createStatement().executeQuery(sql);
                             while (rs2.next()) {
                                 userID = rs2.getInt("userID");
@@ -595,7 +578,23 @@ public class MainActivity extends AppCompatActivity {
     }
     //End RecyclerView.Adapter: MyAppAdapter-----------------------------------------------------
 
-    //Start checkmeber class---------------------------------------------------------------------
+    //1.5.Start Selection_Userlist class
+    public class Selection_Userlist implements Serializable {
+
+        private boolean isChecked = false;
+
+        public boolean isChecked() {
+            return isChecked;
+        }
+
+        public void setChecked(boolean checked) {
+            isChecked = checked;
+        }
+    }
+    //End Selection_Userlist class
+
+
+    //1.6.Start checkmeber class---------------------------------------------------------------------
     public class checkmember extends AsyncTask<String, String , String> {
 
         String z = "";
@@ -624,10 +623,10 @@ public class MainActivity extends AppCompatActivity {
                         memberID = rs.getInt("userID");
                         memberemail = rs.getString("email");
                     }
-                    //Load str (email txt) from LoginActivity
-                    String str = getIntent().getStringExtra("message_key_email");
+                    //Load globaluseremail (set from LoginActivity)
+                    GlobalClass globalClass = (GlobalClass) getApplicationContext();
 
-                    sql = "SELECT userID, email FROM register WHERE email = '" + str +"'";
+                    sql = "SELECT userID, email FROM register WHERE email = '" + globalClass.getGlobaluseremail() +"'";
                     ResultSet rs2 = con.createStatement().executeQuery(sql);
                     while (rs2.next()) {
                         userID = rs2.getInt("userID");

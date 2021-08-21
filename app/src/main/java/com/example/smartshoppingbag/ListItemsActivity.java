@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -46,12 +47,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartshoppingbag.Connection.ConnectionClass;
 
+//1.Start Code for ListItemsActivity----------------------------------------------------
 public class ListItemsActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
+    //1.1.Start ListItemsActivity Declarations--------------------------------------------
     private TextView dateText;
     private TextView listNameText;
     String listname;
     String listdate;
+    String userlistitemID;
     Connection con;
     Button savebtn;
     ImageButton insertbtn;
@@ -67,7 +71,9 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
     private RecyclerView recyclerViewMyListItems; //RecyclerView
     private RecyclerView.LayoutManager mLayoutManager;
     private boolean success = false; // boolean
+    //End ListItemsActivity Declarations---------------------------------------------------
 
+    //1.2.Start onCreate ListItemsActivity ----------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -84,13 +90,6 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
         status_listitems = (TextView)findViewById(R.id.status_listitems);
         enterListName = (EditText)findViewById(R.id.enterListName);
         FillSpinner();
-
-        //Load str (email txt) from LoginActivity and intent to MainActivity
-        /*String str = getIntent().getStringExtra("message_key_email");
-        Toast.makeText(ListItemsActivity.this,"email:"+str,Toast.LENGTH_LONG).show();
-        new Intent(ListItemsActivity.this, MainActivity.class).putExtra("message_key_email", str);*/
-        //
-
 
         findViewById(R.id.showCalender).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,8 +109,8 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
         recyclerViewMyListItems.setLayoutManager(mLayoutManager);
 
         // Calling AsyncTask/SyncData for Items List recyclerview
-        //SyncData_ListItems orderData_ListItems = new SyncData_ListItems();
-        //orderData_ListItems.execute("");
+        SyncData_ListItems orderData_ListItems = new SyncData_ListItems();
+        orderData_ListItems.execute("");
 
         try{
             con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
@@ -139,31 +138,8 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
         }
 
         listNameText.setText("Selected list " + listname);
-
-        //edit text change text on sql, when user enters/corrects his text
-        /*enterListName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String listNameAfter = enterListName.getText().toString();
-                listNameText.setText("Entered list name: " + listNameAfter);
-
-            }
-        });*/
-
-
         String listNameAfter = enterListName.getText().toString();
         listNameText.setText("Entered list name: " + listNameAfter);
-
         enterListName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus) {
@@ -190,8 +166,260 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
                 }
             }
         });
+
+        //Action onClick insertitembutton (insertbtn)
+        insertbtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                new ListItemsActivity.insertitem().execute("");
+                // Calling AsyncTask/SyncData_ListItems (Refresh recyclerView)
+                itemListArray = new ArrayList<ListItemsActivity_RecyclerView>();
+                SyncData_ListItems orderData = new ListItemsActivity.SyncData_ListItems();
+                orderData.execute("");
+            }
+        });
+    }
+    //End onCreate ListItemsActivity ------------------------------------------------------
+
+    //1.3.Start AsyncTask/SyncData to Load Data to recyclerViewMyLists-----------------------------
+    private class SyncData_ListItems extends AsyncTask<String, String, String>
+    {
+        String msg = "Internet/DB_Credentials/Windows_FireWall_TurnOn Error, See Android Monitor in the bottom For details!";
+        ProgressDialog progress;
+
+        //Starts the progress dailog
+        @Override
+        protected void onPreExecute()
+        {
+            progress = ProgressDialog.show(ListItemsActivity.this, "Synchronising", "MyItemList is Loading...", true);
+        }
+
+        //Connect to the database, write query and add items to itemArrayList of MainActivity_UserLists
+        @Override
+        protected String doInBackground(String... strings)
+        {
+            try
+            {
+                con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
+                if(con == null)
+                {
+                    success = false;
+                }
+                else {
+                        //Find userlistitems informations based on the selected listID
+                        final String listID = getIntent().getStringExtra("message_keyID");
+                        String sql = "SELECT itemname, userlistitemID, listID, itemcategory, costbeforecomma, costaftercomma FROM userlistitem WHERE listID = " + listID + " ORDER BY itemname";
+                        ResultSet rs = con.createStatement().executeQuery(sql);
+
+                        if (rs != null) // if resultset not null, I add items to itemArraylist using class created
+                        {
+                            while (rs.next())
+                            {
+                                try {
+                                    itemListArray.add(new ListItemsActivity_RecyclerView(rs.getString("itemname"), rs.getString("userlistitemID"), rs.getString("listID"), rs.getString("itemcategory"), rs.getString("costbeforecomma"), rs.getString("costaftercomma")));
+                                    //status.setText("Second itemArrayMylists Query successfull");
+
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                    //status.setText("Second itemArrayMylists Query unsuccessfull for "+userID);
+                                }
+                            }
+                            msg = "Found";
+                            success = true;
+                        } else {
+                            msg = "No Lists found!";
+                            success = false;
+                        }
+
+
+                }
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+                Writer writer = new StringWriter();
+                e.printStackTrace(new PrintWriter(writer));
+                msg = writer.toString();
+                success = false;
+            }
+            return msg;
+        }
+
+        //Load items of itemListArray to recyclerViewMyListItems in ListItemsActivity by using MyListItemsAdapter
+        @Override
+        protected void onPostExecute(String msg)
+        {
+            progress.dismiss();
+            Toast.makeText(ListItemsActivity.this, msg + "", Toast.LENGTH_LONG).show();
+            if (success == false)
+            {
+            }
+            else {
+                try
+                {
+                    myListItemsAdapter = new MyListItemsAdapter(itemListArray , ListItemsActivity.this);
+                    recyclerViewMyListItems.setAdapter(myListItemsAdapter);
+                } catch (Exception ex)
+                {
+
+                }
+            }
+        }
+    }
+    //End AsyncTask/SyncData to Load Data to recyclerViewMyLists-------------------------------
+
+    //1.4.Start MyListItemsAdapter-----------------------------------------------------------
+    public class MyListItemsAdapter extends RecyclerView.Adapter<MyListItemsAdapter.ViewHolder> {
+        private List<ListItemsActivity_RecyclerView> values_mylistitems;
+        public Context context_listItems;
+        private int checkedPosition_RecyclerView = -1;
+
+        public class ViewHolder extends RecyclerView.ViewHolder
+        {
+            // public textView and layout
+            public CheckBox itemcheckbox;
+            public TextView itemname;
+            public TextView itemCategory;
+            public TextView userlistitemID;
+            public TextView listID;
+            public TextView costbeforecomma;
+            public TextView comma;
+            public TextView costaftercomma;
+            public ImageView img_options_list_items;
+            public View layout;
+            //public ImageView mylist_popup_options;
+
+            public ViewHolder(View view)
+            {
+                super(view);
+                layout = view;
+
+                itemcheckbox = (CheckBox) view.findViewById(R.id.checkBoxListItems);
+                itemCategory = (TextView) view.findViewById(R.id.itemCategory);
+                itemname = (TextView) view.findViewById(R.id.itemname);
+                costbeforecomma = (TextView) view.findViewById(R.id.costbeforecomma);
+                comma = (TextView) view.findViewById(R.id.comma);
+                costaftercomma = (TextView) view.findViewById(R.id.costaftercomma);
+                img_options_list_items = (ImageView) view.findViewById(R.id.img_options_list_items);
+                userlistitemID = (TextView) view.findViewById(R.id.userlistitemID);
+                listID = (TextView) view.findViewById(R.id.listID);
+
+            }
+        }
+
+
+        // Constructor
+        public MyListItemsAdapter(List<ListItemsActivity_RecyclerView> myDataset_myItems,Context context_listItems)
+        {
+            values_mylistitems = myDataset_myItems;
+            this.context_listItems = context_listItems;
+        }
+
+        // Create new views (invoked by the layout manager) and inflates
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            // create a new view
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_items_activity_recycler_view, parent, false);
+            return new ViewHolder(view);
+        }
+
+        // Binding items to the view
+        @Override
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
+
+            final ListItemsActivity_RecyclerView listItemsActivity_RecyclerView = values_mylistitems.get(position);
+            holder.itemname.setText(listItemsActivity_RecyclerView.getTextListItemName());
+            holder.itemCategory.setText(listItemsActivity_RecyclerView.getTextItemCategory());
+            holder.costbeforecomma.setText(listItemsActivity_RecyclerView.getTextCostBeforeComma());
+            holder.costaftercomma.setText(listItemsActivity_RecyclerView.getTextCostAfterComma());
+            holder.userlistitemID.setText(listItemsActivity_RecyclerView.getTextUserListItemID());
+            //holder.itemcheckbox.setOnClickListener(new )
+
+            holder.img_options_list_items.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    checkedPosition_RecyclerView = position;
+                    //status.setText("Checked Position is  "+ checkedPosition_RecyclerView);
+                    notifyDataSetChanged();
+
+                    PopupMenu popupMenu = new PopupMenu(context_listItems, view);
+                    popupMenu.getMenuInflater().inflate(R.menu.mylist_popup, popupMenu.getMenu());
+                    popupMenu.show();
+
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+
+                            switch (item.getItemId())
+                            {
+                                case R.id.edit:
+
+                                    editTextListItem.setText(values_mylistitems.get(position).getTextListItemName());
+
+                                    break;
+
+                                case R.id.delete:
+
+                                    userlistitemID = values_mylistitems.get(position).getTextUserListItemID();
+
+                                    Toast.makeText(context_listItems, "Delete clicked", Toast.LENGTH_SHORT).show();
+
+                                    //Remove list from recycleview
+                                    values_mylistitems.remove(position);
+                                    notifyDataSetChanged();
+
+                                    //Remove list from DB
+                                    try{
+                                        con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
+                                        if(con == null){
+
+                                        } else {
+
+                                            //Delete list entry from dbo.userlist
+                                            String sql = "DELETE FROM userlistitem WHERE userlistitemID = " + userlistitemID ;
+                                            ResultSet rs1 = con.createStatement().executeQuery(sql);
+
+                                            //Refresh List List
+                                            itemListArray = new ArrayList<ListItemsActivity_RecyclerView>();
+                                            ListItemsActivity.SyncData_ListItems orderData = new ListItemsActivity.SyncData_ListItems();
+                                            orderData.execute("");
+
+                                            //break;
+                                        }
+
+                                    } catch (Exception e){
+                                        listNameText.setText("Error");
+                                    }
+
+                                    //status.setText("List "+ mainActivity_userLists.getListName() +" deleted");
+
+                            }
+                            return false;
+                        }
+
+                    });
+                }
+            });
+
+            //highlights only the selected position
+            if(checkedPosition_RecyclerView==position){
+                holder.layout.setBackgroundColor(Color.LTGRAY);
+            } else {
+                holder.layout.setBackgroundColor(Color.WHITE);
+            }
+
+        }
+
+        // get item count returns the list item count
+        @Override
+        public int getItemCount() {
+            return values_mylistitems == null ? 0 : values_mylistitems.size();
+        }
     }
 
+    //End MyListItemsAdapter---------------------------------------------------------
+
+    //1.5.Start void FillSpinner and DatePicker---------------------------------------------
     public void FillSpinner() {
         try {
             con = connectionClass(ConnectionClass.un.toString(), ConnectionClass.pass.toString(), ConnectionClass.db.toString(), ConnectionClass.server.toString());
@@ -219,7 +447,6 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
             status_listitems.setText("Query unsuccessfull");
         }
     }
-
     public void showDatePickerDialog(){
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 this,
@@ -229,7 +456,6 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
                 Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show();
     }
-
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Integer addmonth = month + 1;
@@ -248,262 +474,57 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
                 PreparedStatement stmt = con.prepareStatement(query);
                 ResultSet rs = stmt.executeQuery();
 
-                }
+            }
 
         } catch (Exception e){
             System.out.println(e.getMessage());
             //status.setText("Error");
         }
     }
+    //End void FillSpinner and DatePicker---------------------------------------------
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public class MyListItemsAdapter extends RecyclerView.Adapter<MyListItemsAdapter.ViewHolder> {
-        private List<ListItemsActivity_RecyclerView> values_mylistitems;
-        public Context context_listItems;
-        private int checkedPosition_RecyclerView = -1;
+    //1.6.Start insertitem class---------------------------------------------------------------------
+    public class insertitem extends AsyncTask<String, String , String> {
 
-        public class ViewHolder extends RecyclerView.ViewHolder
-        {
-            // public textView and layout
-            public EditText editTextListItem;
-            public Spinner itemCategory;
-            public Spinner cost_before_comma;
-            public TextView cost_comma;
-            public Spinner cost_after_comma;
-            public ImageView img_remove_listitem;
-            public View layout;
-            //public ImageView mylist_popup_options;
+        String z = "";
+        Boolean isSuccess = false;
 
-            public ViewHolder(View view)
-            {
-                super(view);
-                layout = view;
-
-                editTextListItem = (EditText) view.findViewById(R.id.editTextListItem);
-                itemCategory = (Spinner) view.findViewById(R.id.itemCategory);
-                cost_before_comma = (Spinner) view.findViewById(R.id.cost_before_comma);
-                cost_comma = (TextView) view.findViewById(R.id.cost_comma);
-                cost_after_comma = (Spinner) view.findViewById(R.id.cost_after_comma);
-                img_remove_listitem = (ImageView) view.findViewById(R.id.img_remove_listitem);
-                
-            }
-        }
-
-        //Start AsyncTask/SyncData to Load Data to recyclerViewMyLists-----------------------------
-        private class SyncData_ListItems extends AsyncTask<String, String, String>
-        {
-            String msg = "Internet/DB_Credentials/Windows_FireWall_TurnOn Error, See Android Monitor in the bottom For details!";
-            ProgressDialog progress;
-
-            //Starts the progress dailog
-            @Override
-            protected void onPreExecute()
-            {
-                progress = ProgressDialog.show(ListItemsActivity.this, "Synchronising",
-                        "MyItemList is Loading...", true);
-            }
-
-            //Connect to the database, write query and add items to itemArrayList of MainActivity_UserLists
-            @Override
-            protected String doInBackground(String... strings)
-            {
-                try
-                {
-                    con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
-                    if(con == null)
-                    {
-                        success = false;
-                    }
-                    else {
-                    /*
-                        //Load str (email txt) from LoginActivity
-                        Intent in = getIntent();
-                        String str = in.getStringExtra("message_key");
-
-
-                        //Find userID from intented str (email of the logged-in-user)
-                        String sql = "SELECT userID FROM register WHERE email = '" + str +"'";
-                        ResultSet rs2 = con.createStatement().executeQuery(sql);
-                        while (rs2.next()) {
-                            userID = rs2.getInt("userID");
-                        }
-
-                        //Find userlist information of the logged-in-user
-                        sql = "SELECT listname, listID, listdate FROM userlist WHERE userID = "+ userID + " ORDER BY listdate";
-                        ResultSet rs = con.createStatement().executeQuery(sql);
-
-                        if (rs != null) // if resultset not null, I add items to itemArraylist using class created
-                        {
-                            while (rs.next())
-                            {
-                                try {
-                                    itemArrayMylists.add(new MainActivity_UserLists(rs.getString("listname"), rs.getString("listdate"), rs.getString("listID")));
-                                    status.setText("Second itemArrayMylists Query successfull");
-
-                                } catch (Exception ex) {
-                                    ex.printStackTrace();
-                                    status.setText("Second itemArrayMylists Query unsuccessfull for "+userID);
-                                }
-                            }
-                            msg = "Found";
-                            success = true;
-                        } else {
-                            msg = "No Lists found!";
-                            success = false;
-                        }
-                        */
-
-                     }
-                } catch (Exception e)
-                {
-                    e.printStackTrace();
-                    Writer writer = new StringWriter();
-                    e.printStackTrace(new PrintWriter(writer));
-                    msg = writer.toString();
-                    success = false;
-                }
-                return msg;
-            }
-
-            //Load items of itemListArray to recyclerViewMyListItems in ListItemsActivity by using MyListItemsAdapter
-            @Override
-            protected void onPostExecute(String msg)
-            {
-                progress.dismiss();
-                Toast.makeText(ListItemsActivity.this, msg + "", Toast.LENGTH_LONG).show();
-                if (success == false)
-                {
-                }
-                else {
-                    try
-                    {
-                        myListItemsAdapter = new MyListItemsAdapter(itemListArray , ListItemsActivity.this);
-                        recyclerViewMyListItems.setAdapter(myListItemsAdapter);
-                    } catch (Exception ex)
-                    {
-
-                    }
-                }
-            }
-        }
-        //End AsyncTask/SyncData to Load Data to recyclerViewMyLists-------------------------------
-
-        // Constructor
-        public MyListItemsAdapter(List<ListItemsActivity_RecyclerView> myDataset_myItems,Context context_listItems)
-        {
-            values_mylistitems = myDataset_myItems;
-            this.context_listItems = context_listItems;
-        }
-
-        // Create new views (invoked by the layout manager) and inflates
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-        {
-            // create a new view
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_items_activity_recycler_view, parent, false);
-            return new ViewHolder(view);
+        protected void onPreExecute() {
+
         }
 
-        // Binding items to the view
+        @SuppressLint("WrongThread")
         @Override
-        public void onBindViewHolder(final ViewHolder holder, final int position) {
-
-            final ListItemsActivity_RecyclerView listItemsActivity_RecyclerView = values_mylistitems.get(position);
-            holder.editTextListItem.setText(listItemsActivity_RecyclerView.getEditTextListItem());
-            //holder.itemCategory.setText(listItemsActivity_RecyclerView.getItemCategory());
-            //holder.cost_before_comma.setText(listItemsActivity_RecyclerView.getCostBeforeComma());
-            //holder.cost_after_comma.setText(listItemsActivity_RecyclerView.getCostAfterComma());
-
-            /*holder.mylist_popup_options.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View view) {
-                    checkedPosition = position;
-                    status.setText("Checked Position is  "+ checkedPosition);
-                    notifyDataSetChanged();
-
-                    PopupMenu popupMenu = new PopupMenu(context, view);
-                    popupMenu.getMenuInflater().inflate(R.menu.mylist_popup, popupMenu.getMenu());
-                    popupMenu.show();
-
-                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-
-                            switch (item.getItemId())
-                            {
-                                case R.id.edit:
-
-                                    listID = values_mylists.get(position).getListID();
-                                    //Toast.makeText(context, listname, Toast.LENGTH_SHORT).show();
-                                    Intent intentMain_edit = new Intent(MainActivity.this, ListItemsActivity.class);
-
-                                    intentMain_edit.putExtra("message_key", listID);
-                                    startActivity(intentMain_edit);
-
-                                    break;
-
-                                case R.id.delete:
-
-                                    listID = values_mylists.get(position).getListID();
-                                    //Toast.makeText(context, listname, Toast.LENGTH_SHORT).show();
-
-                                    Toast.makeText(context, "Delete clicked", Toast.LENGTH_SHORT).show();
-
-                                    //Remove list from recycleview
-                                    values_mylists.remove(position);
-                                    notifyDataSetChanged();
-
-                                    //Remove list from DB
-                                    try{
-                                        con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
-                                        if(con == null){
-
-                                        } else {
-
-                                            //Delete list entry from dbo.userlist
-                                            String sql = "DELETE FROM userlist WHERE listID = " + listID ;
-                                            ResultSet rs1 = con.createStatement().executeQuery(sql);
-
-                                            //Refresh List List
-                                            itemArrayMylists = new ArrayList<MainActivity_UserLists>();
-                                            MainActivity.SyncData_MyLists orderData = new MainActivity.SyncData_MyLists();
-                                            orderData.execute("");
-
-                                            //break;
-                                        }
-
-                                    } catch (Exception e){
-                                        status.setText("Error");
-                                    }
-
-                                    status.setText("List "+ mainActivity_userLists.getListName() +" deleted");
-                            }
-
-                            return false;
-                        }
-                    });
+        public String doInBackground(String... strings) {
+            try{
+                con = connectionClass(ConnectionClass.un.toString(),ConnectionClass.pass.toString(),ConnectionClass.db.toString(),ConnectionClass.server.toString());
+                if(con == null){
+                    z = "Check Your Internet Connection";
                 }
-            });*/
+                else{
+                    //find listID from globalclass
+                    GlobalClass globalClass = (GlobalClass) getApplicationContext();
+                    //write new listitem into DB
+                    String sql = "INSERT INTO userlistitem (listID, itemname, itemcategory, costbeforecomma, costaftercomma, checked) VALUES (" + globalClass.getGloballistID() + ", '" + editTextListItem.getText() + "', '" + itemCategorySpinner_2.getSelectedItem()  + "', " + costBeforeCommaSpinner_2.getSelectedItem() + ", " + costAfterCommaSpinner_2.getSelectedItem() + ", 0)";
+                    ResultSet rs1 = con.createStatement().executeQuery(sql);
+                    //listNameText.setText("Values: " + editTextListItem.getText() + " " + itemCategorySpinner_2.getSelectedItem() + " " + costBeforeCommaSpinner_2.getSelectedItem() + " " + costAfterCommaSpinner_2.getSelectedItem());
+                }
 
-            /*
-            //highlights only the selected position
-            if(checkedPosition==position){
-                holder.layout.setBackgroundColor(Color.LTGRAY);
-            } else {
-                holder.layout.setBackgroundColor(Color.WHITE);
+            }catch (Exception e){
+                isSuccess = false;
+                z = e.getMessage();
             }
-            */
+
+            return z;
         }
 
-        // get item count returns the list item count
+        //Show Text to user
         @Override
-        public int getItemCount() {
-            return values_mylistitems == null ? 0 : values_mylistitems.size();
+        protected void onPostExecute(String s) {
         }
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    //End insertitem class-----------------------------------------------------------------------
 
     @SuppressLint("NewApi")
     public Connection connectionClass(String user, String password, String database, String server){
@@ -524,6 +545,6 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
         return connection;
     }
 }
-
+//End Code for ListItemsActivity--------------------------------------------------------
 
 

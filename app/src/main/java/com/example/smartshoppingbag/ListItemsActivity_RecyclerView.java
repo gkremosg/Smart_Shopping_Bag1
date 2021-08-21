@@ -2,35 +2,47 @@ package com.example.smartshoppingbag;
 
 public class ListItemsActivity_RecyclerView {
 
-    public String listItem;
-    public String category;
-    public Integer cost_before_comma;
-    public Integer cost_after_comma;
+    public String userlistitemID;
+    public String listID;
+    public String itemname;
+    public String itemcategory;
+    public String costbeforecomma;
+    public String costaftercomma;
 
     private boolean isSelected = false;
 
-    public ListItemsActivity_RecyclerView(String listItem, String category, Integer cost_before_comma, Integer cost_after_comma){
-        this.listItem = listItem;
-        this.category = category;
-        this.cost_before_comma = cost_before_comma;
-        this.cost_after_comma = cost_after_comma;
+    public ListItemsActivity_RecyclerView(String itemname, String userlistitemID, String listID, String itemcategory, String costbeforecomma, String costaftercomma){
+        this.itemname = itemname;
+        this.userlistitemID = userlistitemID;
+        this.listID = listID;
+        this.itemcategory = itemcategory;
+        this.costbeforecomma = costbeforecomma;
+        this.costaftercomma = costaftercomma;
+    }
+    public String getTextListItemName() {
+        return itemname;
     }
 
-    public String getEditTextListItem() {
-        return listItem;
+    public String getTextUserListItemID() {
+        return userlistitemID;
     }
 
-    public String getItemCategory() {
-        return category;
+    public String getTextListItemID() {
+        return listID;
     }
 
-    public Integer getCostBeforeComma() {
-        return cost_before_comma;
+    public String getTextItemCategory() {
+        return itemcategory;
     }
 
-    public Integer getCostAfterComma() {
-        return cost_after_comma;
+    public String getTextCostBeforeComma() {
+        return costbeforecomma;
     }
+
+    public String getTextCostAfterComma() {
+        return costaftercomma;
+    }
+
 
     public void setSelected(boolean selected) {
         isSelected = selected;

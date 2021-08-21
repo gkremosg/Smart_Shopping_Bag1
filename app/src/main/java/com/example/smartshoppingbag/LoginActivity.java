@@ -102,6 +102,8 @@ public class LoginActivity extends AppCompatActivity {
 
                         Intent intentMain = new Intent(LoginActivity.this, MainActivity.class);
                         intentMain.putExtra("message_key_email", str);
+                        GlobalClass globalClass = (GlobalClass) getApplicationContext();
+                        globalClass.setGlobaluseremail(str);
                         startActivity(intentMain);
 
                     } else {
