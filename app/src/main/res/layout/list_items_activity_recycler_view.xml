@@ -102,7 +102,7 @@
 
         <TextView
             android:id="@+id/itemCategory"
-            android:layout_width="120dp"
+            android:layout_width="100dp"
             android:layout_height="37dp"
             android:layout_toEndOf="@+id/itemname"
             android:text=""
@@ -137,7 +137,7 @@
 
         <TextView
             android:id="@+id/itemname"
-            android:layout_width="120dp"
+            android:layout_width="100dp"
             android:layout_height="37dp"
             android:layout_marginStart="-30dp"
             android:layout_toEndOf="@+id/checkBoxListItems"
@@ -162,6 +162,13 @@
             android:layout_toEndOf="@+id/img_options_list_items"
             android:text="" />
 
+        <TextView
+            android:id="@+id/checked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/img_options_list_items"
+            android:text="" />
 
     </RelativeLayout>
 

@@ -208,7 +208,7 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
                 else {
                         //Find userlistitems informations based on the selected listID
                         final String listID = getIntent().getStringExtra("message_keyID");
-                        String sql = "SELECT itemname, userlistitemID, listID, itemcategory, costbeforecomma, costaftercomma FROM userlistitem WHERE listID = " + listID + " ORDER BY itemname";
+                        String sql = "SELECT itemname, userlistitemID, listID, itemcategory, costbeforecomma, costaftercomma, checked FROM userlistitem WHERE listID = " + listID + " ORDER BY itemname";
                         ResultSet rs = con.createStatement().executeQuery(sql);
 
                         if (rs != null) // if resultset not null, I add items to itemArraylist using class created
@@ -216,7 +216,7 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
                             while (rs.next())
                             {
                                 try {
-                                    itemListArray.add(new ListItemsActivity_RecyclerView(rs.getString("itemname"), rs.getString("userlistitemID"), rs.getString("listID"), rs.getString("itemcategory"), rs.getString("costbeforecomma"), rs.getString("costaftercomma")));
+                                    itemListArray.add(new ListItemsActivity_RecyclerView(rs.getString("itemname"), rs.getString("userlistitemID"), rs.getString("listID"),rs.getString("itemcategory"), rs.getString("costbeforecomma"), rs.getString("costaftercomma"), rs.getString("checked")));
                                     //status.setText("Second itemArrayMylists Query successfull");
 
                                 } catch (Exception ex) {
@@ -272,7 +272,7 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
         private List<ListItemsActivity_RecyclerView> values_mylistitems;
         public Context context_listItems;
         private int checkedPosition_RecyclerView = -1;
-
+        public Integer n = 0;
         public class ViewHolder extends RecyclerView.ViewHolder
         {
             // public textView and layout
@@ -284,6 +284,7 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
             public TextView costbeforecomma;
             public TextView comma;
             public TextView costaftercomma;
+            public TextView checked;
             public ImageView img_options_list_items;
             public View layout;
             //public ImageView mylist_popup_options;
@@ -302,6 +303,7 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
                 img_options_list_items = (ImageView) view.findViewById(R.id.img_options_list_items);
                 userlistitemID = (TextView) view.findViewById(R.id.userlistitemID);
                 listID = (TextView) view.findViewById(R.id.listID);
+                checked = (TextView) view.findViewById(R.id.checked);
 
             }
         }
@@ -333,7 +335,14 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
             holder.costbeforecomma.setText(listItemsActivity_RecyclerView.getTextCostBeforeComma());
             holder.costaftercomma.setText(listItemsActivity_RecyclerView.getTextCostAfterComma());
             holder.userlistitemID.setText(listItemsActivity_RecyclerView.getTextUserListItemID());
-            //holder.itemcheckbox.setOnClickListener(new )
+            holder.checked.setText(listItemsActivity_RecyclerView.getTextChecked());
+            if(holder.checked.getText() == "1") {
+                holder.itemcheckbox.setChecked(!holder.itemcheckbox.isChecked());
+            }
+            if(holder.itemcheckbox.isChecked()){
+                n=n+1;
+                status_listitems.setText(n + " items are now checked");
+            }
 
             holder.img_options_list_items.setOnClickListener(new View.OnClickListener(){
                 @Override
@@ -381,7 +390,7 @@ public class ListItemsActivity extends AppCompatActivity implements DatePickerDi
 
                                             //Refresh List List
                                             itemListArray = new ArrayList<ListItemsActivity_RecyclerView>();
-                                            ListItemsActivity.SyncData_ListItems orderData = new ListItemsActivity.SyncData_ListItems();
+                                            SyncData_ListItems orderData = new SyncData_ListItems();
                                             orderData.execute("");
 
                                             //break;
